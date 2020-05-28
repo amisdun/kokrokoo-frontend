@@ -18,7 +18,8 @@
     "postscribe": "^2.0.8",
     "validator": "^13.0.0",
     "vue": "^2.6.11",
-    "vue-router": "^3.3.0"
+    "vue-router": "^3.3.0",
+    "vuetify": "^2.2.30"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.3.0",

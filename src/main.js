@@ -4,7 +4,10 @@ import VueRouter from "vue-router"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import 'jquery/dist/jquery.min.js'
-import 'font-awesome/css/font-awesome.css'
+import './assets/css/sb-admin-2.min.css'
+import './assets/vendor/jquery-easing/jquery.easing.min.js'
+// import './assets/js/sb-admin-2.min.js'
+import './assets/vendor/fontawesome-free/css/all.min.css'
 import axios from 'axios'
 import LoadScript from 'vue-plugin-load-script';
 import UserSignIn from './components/UserSignIn.vue'
