@@ -35,14 +35,14 @@
       <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-cog"></i>
-          <span>Components</span>
+          <i class="fas fa-fw fa-credit-card"></i>
+          <span>Create Rate Card</span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Custom Components:</h6>
-            <a class="collapse-item" href="buttons.html">Buttons</a>
-            <a class="collapse-item" href="cards.html">Cards</a>
+            <h6 class="collapse-header">Rate cards:</h6>
+            <router-link class="collapse-item" to="/Media/RateCards">Create</router-link>
+            <router-link class="collapse-item" to="/Media/ViewCards">View Cards</router-link>
           </div>
         </div>
       </li>
@@ -51,15 +51,12 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
           <i class="fas fa-fw fa-wrench"></i>
-          <span>Utilities</span>
+          <span>Subscriptions</span>
         </a>
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Custom Utilities:</h6>
-            <a class="collapse-item" href="utilities-color.html">Colors</a>
-            <a class="collapse-item" href="utilities-border.html">Borders</a>
-            <a class="collapse-item" href="utilities-animation.html">Animations</a>
-            <a class="collapse-item" href="utilities-other.html">Other</a>
+            <h6 class="collapse-header">Subscriptions Utilities:</h6>
+            <router-link class="collapse-item" to="/Media/Subscriptions">View Subscriptions</router-link>
           </div>
         </div>
       </li>
@@ -75,35 +72,44 @@
       <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>Pages</span>
+          <i class="fas fa-fw fa-chart-line"></i>
+          <span>Transactions</span>
         </a>
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Login Screens:</h6>
-            <a class="collapse-item" href="login.html">Login</a>
-            <a class="collapse-item" href="register.html">Register</a>
-            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-            <div class="collapse-divider"></div>
-            <h6 class="collapse-header">Other Pages:</h6>
-            <a class="collapse-item" href="404.html">404 Page</a>
-            <a class="collapse-item" href="blank.html">Blank Page</a>
+            <h6 class="collapse-header">Transactions</h6>
+            <router-link class="collapse-item" to="/Media/Transactions">View Transactions</router-link>
           </div>
         </div>
       </li>
 
       <!-- Nav Item - Charts -->
       <li class="nav-item">
-        <a class="nav-link" href="charts.html">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Charts</span></a>
+        <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseReport" aria-expanded="true" aria-controls="collapseReport">
+          <i class="fas fa-fw fa-newspaper"></i>
+          <span>Reports</span></a>
+          <div id="collapseReport" class="collapse" aria-labelledby="headingReport" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Reports</h6>
+            <router-link class="collapse-item" to="/Media/DailyReports">Daily Reports</router-link>
+            <router-link class="collapse-item" to="/Media/GeneralReports">General Reports</router-link>
+          </div>
+        </div>
       </li>
 
       <!-- Nav Item - Tables -->
       <li class="nav-item">
-        <a class="nav-link" href="tables.html">
-          <i class="fas fa-fw fa-table"></i>
-          <span>Tables</span></a>
+        <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseAdmin" aria-expanded="true" aria-controls="collapseAdmin">
+          <i class="fas fa-fw fa-users"></i>
+          <span>Admins</span></a>
+          <div id="collapseAdmin" class="collapse" aria-labelledby="headingAdmin" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Admins</h6>
+            <router-link class="collapse-item" to="/Media/ViewAdmins">View Admins</router-link>
+            <router-link class="collapse-item" to="/Media/CreateAdmins">Create new Admin</router-link>
+            <router-link class="collapse-item" to="/Media/AdminActivities">Admin Activities</router-link>
+          </div>
+        </div>
       </li>
 
       <!-- Divider -->
@@ -311,7 +317,7 @@
 	<footer class="sticky-footer bg-dark">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2019</span>
+            <span>Copyright &copy; Your Website 2020</span>
           </div>
         </div>
       </footer>
@@ -324,7 +330,9 @@
 		name: "MediaDashboard",
 		data(){
 			return {
-
+				error1: "",
+				error2: "",
+				error3: "",
 			}
 		},
 		mounted(){
@@ -336,14 +344,6 @@
 </script>
 
 <style scoped>
-	#wrapper #content-wraper{
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  overflow-x: hidden;
-  width: 100%;
-  padding-top: 1rem;
-  padding-bottom: 80px;
-}
+
 
 </style>
