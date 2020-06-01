@@ -130,6 +130,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .container{
-  width: 50%
+  width: 70vw
   }
 </style>
