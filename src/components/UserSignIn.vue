@@ -2,6 +2,9 @@
     <div>
     <div class="container">
     <div class="card card-login mx-auto mt-5">
+      <div class="alert text-center" :class="[server_res == 'success'? 'alery-success':'alert-danger']" v-show="res_show" role="alert">
+          {{message}}
+      </div>
       <div class="card-header text-center">Media Login</div>
       <div class="card-body">
         <form>
@@ -26,7 +29,7 @@
               </label>
             </div>
           </div>
-          <a class="btn btn-info btn-block" id="login" @click="Login" href="#">Login</a>
+          <a class="btn btn-info btn-block" id="login" @click.prevent="Login" href="#">Login</a>
         </form>
         <div class="text-center">
           <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
@@ -58,11 +61,15 @@ export default {
       error2: "",
       email: "",
       password: "",
-      loading: false
+      loading: false,
+      server_res: "",
+      message: "",
+      res_show: false
     }
   },
   methods: {
     Login(){
+      this.res_show = false
       if(!this.email) this.error1 = "email required";
       else{
         if(validator.isEmail(this.email) === false) this.error1 = "Invalid Email Format"
@@ -87,7 +94,7 @@ export default {
             dataType: "JSON",
             data: {
               grant_type : "password",
-              client_id : 1,
+              client_id : 2,
               client_secret: "F3jhM0CGBZs7xGkxz812k7aN7NdnFNeqhD2jxYbg",
               username: email,
               password: password,
@@ -95,10 +102,19 @@ export default {
             }
           })
 
-          console.log(loginResponce)
+          if(loginResponce.status === 200){
+            console.log(loginResponce.status)
+            this.$router.push({path: '/media-dashboard'})
+          }
       } catch(e) {
         // statements
-        console.log(e);
+        console.log(e)
+        if(e){
+          this.message = "wrong username or password"
+          this.server_res = "error"
+          this.loading = false
+          this.res_show = true
+        }
       }
     }
   },
