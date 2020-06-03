@@ -8,6 +8,8 @@ import './assets/css/sb-admin-2.min.css'
 // import './assets/vendor/jquery-easing/jquery.easing.min.js'
 // import './assets/js/sb-admin-2.min.js'
 import './assets/vendor/fontawesome-free/css/all.min.css'
+// import './assets/vendor/chart.js/Chart.min.js'
+// import './assets/vendor/js/demo/chart-area-demo.js'
 import axios from 'axios'
 import LoadScript from 'vue-plugin-load-script';
 import UserSignIn from './components/UserSignIn.vue'
