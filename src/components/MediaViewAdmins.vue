@@ -343,7 +343,7 @@ beforeCreate(){
         this.$router.push({path: '/'})
       }
 	}
-
+}
 
 </script>
 

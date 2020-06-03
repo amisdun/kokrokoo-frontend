@@ -351,7 +351,7 @@
         this.$router.push({path: '/'})
       }
 	}
-
+}
 
 </script>
 
