@@ -310,12 +310,87 @@
           </ul>
 
         </nav>
-        <div class="card m-3">
-  <h5 class="card-header">Provide Card titile</h5>
+        <div class="card m-3 shadow">
+  <h5 class="card-header">Provide Rate Card Details</h5>
   <div class="card-body">
-    <h5 class="card-title">Special title treatment</h5>
-    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-    <a href="#" class="btn btn-primary">Create Titile</a>
+    <h5 class="card-title">All fields are required</h5>
+<form v-if="media_type === 'TV' || media_type === 'Radio'">
+  <div class="form-group">
+    <input type="text" class="form-control" v-model="title" placeholder="Enter Title">
+    <span class="text-danger">{{error1}}</span>
+    </div>
+    <hr>
+    <div class="text-center m-2"><h2>Card Details</h2></div>
+  <div class="form-group">
+    <input type="time" class="form-control" v-model="time" placeholder="Enter Time">
+    <span class="text-danger">{{error2}}</span>
+  </div>
+  <div class="form-group">
+    <input type="number" class="form-control" v-model="slots" placeholder="Enter Slot(s)">
+    <span class="text-danger">{{error3}}</span>
+  </div>
+  <div class="form-group">
+    <input type="text" class="form-control" v-model="day" placeholder="Enter day">
+    <span class="text-danger">{{error4}}</span>
+  </div>
+<div class="form-group">
+    <input type="number" class="form-control" v-model="Rate" placeholder="Enter Rate(GHS)">
+    <span class="text-danger">{{error5}}</span>
+  </div>
+  <div class="text-center">
+          <span class="text-success" v-show="loading">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </span>
+        </div>
+  <button type="submit" class="btn btn-primary" @click.prevent="CreateTvRadioCrad">Create Rate Card</button>
+  <button type="submit" class="btn btn-primary float-right" @click.prevent="AddTvRadioCardDetails">+</button>
+  <span class="text-danger">{{error6}}</span>
+  <hr>
+<div class="row">
+  <div class="col-6">
+  <button type="submit" class="btn btn-info">{{card_details}} <a href="#" class="btn btn-danger" @click.prevent="RemoveTvRadio">X</a></button>
+  </div>
+
+</div>
+
+</form>
+
+<form v-else>
+<div class="form-group">
+    <input type="text" class="form-control" v-model="title" placeholder="Enter Title">
+    <span class="text-danger">{{error1}}</span>
+    </div>
+    <hr>
+    <div class="text-center m-2"><h2>Card Details</h2></div>
+  <div class="form-group">
+    <input type="text" class="form-control" v-model="Advert_size" placeholder="Enter Advert Size">
+    <span class="text-danger">{{error2}}</span>
+  </div>
+  <div class="form-group">
+    <input type="number" class="form-control" v-model="slots" placeholder="Enter Slot(s)">
+    <span class="text-danger">{{error3}}</span>
+  </div>
+<div class="form-group">
+    <input type="number" class="form-control" v-model="Rate" placeholder="Enter Rate(GHS)">
+    <span class="text-danger">{{error4}}</span>
+  </div>
+  <div class="text-center">
+          <span class="text-success" v-show="loading">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </span>
+        </div>
+  <button type="submit" class="btn btn-primary" @click.prevent="CreatePrintCard">Create Rate Card</button>
+<button type="submit" class="btn btn-primary float-right" @click.prevent="AddPrintCardDetails">+</button><br>
+<div class="float-right">
+  <span class="text-danger">{{error5}}</span>
+</div><br>
+<hr>
+<div class="row">
+  <div class="col-md-6 mt-2 mb-2" v-for="(print,key) of print_card_details" :key="key">
+  <button type="submit" class="btn btn-info"><span>Advert Size: {{print.advert_size}} </span><span>Slots:  {{print.slot}} </span><span>Rate: {{print.rate}}</span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemovePrint">X</a></button>
+  </div>
+</div>
+</form>
   </div>
   </div>
     </div>
@@ -334,6 +409,9 @@
 </template>
 
 <script>
+import validator from 'validator'
+import axios from 'axios'
+
 	export default {
 		name: "MediaRateCards",
 		data(){
@@ -341,8 +419,148 @@
 				error1: "",
 				error2: "",
 				error3: "",
+        error4: "",
+        error5: "",
+        error6: "",
+        media_type: "",
+        card_details: "",
+        print_card_details: [],
+        tv_radio_card_details: [],
+        Advert_size: "",
+        title: "",
+        slots:"",
+        day: "",
+        Rate: "",
+        time: "",
+        loading: false
 			}
 		},
+    methods: {
+      CreateTvRadioCrad(){
+        if(validator.isEmpty(this.title)) this.error1 = "title is required";
+        else this.error1 = "";
+        if(validator.isEmpty(this.time)) this.error2 = "time is required";
+        else this.error2 = "";
+        if(validator.isEmpty(this.slots)) this.error3 = "slots required";
+        else this.error3 = "";
+        if(validator.isEmpty(this.day)) this.error4 = "day is required";
+        else this.error4 = "";
+        if(validator.isEmpty(this.Rate)) this.error5 = "Rate is required";
+        else this.error5 = "";
+        if(this.tv_radio_card_details.length === 0) this.error6 = "Please click to add card Details";
+        else this.error6 = ""
+
+        if(
+          !validator.isEmpty(this.title) &&
+          !validator.isEmpty(this.time) &&
+          !validator.isEmpty(this.slots) &&
+          !validator.isEmpty(this.day) &&
+          !validator.isEmpty(this.Rate) &&
+          this.tv_radio_card_details.length !== 0
+          ){
+          this.loading = true;
+          setTimeout(async function(){
+            try {
+              let media_card_res = await axios({
+                url: "",
+                data: "",
+                method: "POST"
+              })
+
+              if(media_card_res){
+                this.loading = false
+                console.log(media_card_res)
+              }
+            } catch(e) {
+              // statements
+              console.log(e);
+            }
+          },300)
+        }
+
+      },
+      CreatePrintCard(){
+        if(validator.isEmpty(this.title)) this.error1 = "title is required";
+        else this.error1 = "";
+        if(validator.isEmpty(this.Advert_size)) this.error2 = "time is required";
+        else this.error2 = "";
+        if(validator.isEmpty(this.slots)) this.error3 = "slots required";
+        else this.error3 = "";
+        if(validator.isEmpty(this.Rate)) this.error4 = "Rate is required";
+        else this.error4 = "";
+        if(this.print_card_details.length === 0) this.error5 = "Please click to add card Details";
+        else this.error5 = ""
+
+        if(
+          !validator.isEmpty(this.title) &&
+          !validator.isEmpty(this.Advert_size) &&
+          !validator.isEmpty(this.slots) &&
+          !validator.isEmpty(this.Rate) &&
+          this.print_card_details.length !== 0
+          ){
+          this.loading = true
+          setTimeout(async function(){
+            try {
+              // statements
+              let media_card_res = await axios({
+                url: "",
+                method: "POST",
+                data: ""
+              })
+
+              if(media_card_res){
+                this.loading = false
+                console.log(media_card_res)
+              }
+            } catch(e) {
+              // statements
+              console.log(e);
+            }
+          },300)
+        }
+      },
+      AddPrintCardDetails(){
+        console.log(this.Advert_size)
+        console.log(this.print_card_details)
+        if(this.print_card_details.length < 1){
+            this.print_card_details.push({
+              advert_size: this.Advert_size,
+              slot: this.slots,
+              rate: this.Rate
+            })
+          }
+          else{
+            let added_print = false
+            for(let prints of this.print_card_details){
+              if(prints.advert_size === this.Advert_size && prints.slot === this.slots && prints.rate === this.Rate){
+                added_print = true
+
+                return added_print
+              }
+            }
+            console.log(added_print)
+            if(added_print === false){
+              this.print_card_details.push({
+                advert_size: this.Advert_size,
+                slot: this.slots,
+                rate: this.Rate
+              })
+            }
+          }
+      },
+      AddTvRadioCardDetails(){
+
+      },
+      RemovePrint(e){
+        let id = e.currentTarget.id
+
+        this.print_card_details.splice(id,1)
+
+      },
+      RemoveTvRadio(){
+
+      }
+    },
 		mounted(){
 
 		},
