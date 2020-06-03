@@ -103,7 +103,9 @@ export default {
           })
 
           if(loginResponce.status === 200){
-            console.log(loginResponce.status)
+            console.log(loginResponce)
+            this.$session.start()
+            this.$session.set("media-jwt",loginResponce.data.access_token)
             this.$router.push({path: '/media-dashboard'})
           }
       } catch(e) {

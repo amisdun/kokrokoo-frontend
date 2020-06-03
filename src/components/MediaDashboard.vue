@@ -510,7 +510,12 @@
 		},
 		mounted(){
 
-		}
+		},
+    beforeCreate(){
+      if(!this.$session.exists()){
+        this.$router.push({path: '/'})
+      }
+    }
 	}
 
 

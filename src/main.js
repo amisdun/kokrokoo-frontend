@@ -11,6 +11,7 @@ import './assets/vendor/fontawesome-free/css/all.min.css'
 // import './assets/vendor/chart.js/Chart.min.js'
 // import './assets/vendor/js/demo/chart-area-demo.js'
 import axios from 'axios'
+import VueSession from 'vue-session'
 import LoadScript from 'vue-plugin-load-script';
 import UserSignIn from './components/UserSignIn.vue'
 import MediaDashboard from './components/MediaDashboard.vue'
@@ -27,6 +28,7 @@ import MediaTransactions from './components/MediaTransactions.vue'
 
 Vue.use(LoadScript)
 Vue.use(VueRouter)
+Vue.use(VueSession)
 Vue.use(axios)
 
 const router = new VueRouter({
