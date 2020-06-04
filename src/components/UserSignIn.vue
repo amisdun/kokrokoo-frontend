@@ -110,8 +110,8 @@ export default {
           }
       } catch(e) {
         // statements
-        console.log(e)
-        if(e){
+        console.log(e.response)
+        if(e.response.status === 401){
           this.message = "wrong username or password"
           this.server_res = "error"
           this.loading = false

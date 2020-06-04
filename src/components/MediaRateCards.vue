@@ -347,8 +347,8 @@
   <span class="text-danger">{{error6}}</span>
   <hr>
 <div class="row">
-  <div class="col-6">
-  <button type="submit" class="btn btn-info">{{card_details}} <a href="#" class="btn btn-danger" @click.prevent="RemoveTvRadio">X</a></button>
+  <div class="col-6" v-for="(tv_radio,key) of tv_radio_card_details" :key="key">
+  <button type="submit" class="btn btn-info"><span>Day: {{tv_radio.day}}</span><span>Time: {{tv_radio.time}}</span><span>Slot: {{tv_radio.slot}}</span><span>Rate: {{tv_radio.rate}}</span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemoveTvRadio">X</a></button>
   </div>
 
 </div>
@@ -463,7 +463,10 @@ import axios from 'axios'
             try {
               let media_card_res = await axios({
                 url: "",
-                data: "",
+                data: {
+                  title: this.title,
+                  card_details: this.tv_radio_card_details
+                },
                 method: "POST"
               })
 
@@ -505,7 +508,10 @@ import axios from 'axios'
               let media_card_res = await axios({
                 url: "",
                 method: "POST",
-                data: ""
+                data: {
+                  title: this.titile,
+                  card_detials: this.print_card_details
+                }
               })
 
               if(media_card_res){
@@ -549,7 +555,32 @@ import axios from 'axios'
           }
       },
       AddTvRadioCardDetails(){
+        if(this.tv_radio_card_details.length < 1){
+            this.tv_radio_card_details.push({
+              time: this.time,
+              day: this.day,
+              slot: this.slots,
+              rate: this.Rate
+            })
+          }
+          else{
+            let added_tv_radio = false
+            for(let tv_radio of this.tv_radio_card_details){
+              if(tv_radio.time === this.time && tv_radio.slot === this.slots && tv_radio.rate === this.Rate && tv_radio.day === this.day){
+                added_tv_radio = true
 
+                return added_tv_radio
+              }
+            }
+            if(added_tv_radio === false){
+              this.tv_radio_card_details.push({
+                time: this.time,
+                day: this.day,
+                slot: this.slots,
+                rate: this.Rate
+              })
+            }
+          }
       },
       RemovePrint(e){
         let id = e.currentTarget.id
@@ -557,17 +588,19 @@ import axios from 'axios'
         this.print_card_details.splice(id,1)
 
       },
-      RemoveTvRadio(){
+      RemoveTvRadio(e){
+        let id = e.currentTarget.id
 
+        this.tv_radio_card_details.splice(id,1)
       }
     },
 		mounted(){
 
 		},
     beforeCreate(){
-      if(!this.$session.exists()){
-        this.$router.push({path: '/'})
-      }
+      // if(!this.$session.exists()){
+      //   this.$router.push({path: '/'})
+      // }
 	}
 }
 

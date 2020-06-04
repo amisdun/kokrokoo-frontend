@@ -310,6 +310,59 @@
           </ul>
 
         </nav>
+        <table class="table ml-1 mr-5 shadow-lg" v-if="media_type === 'TV' || media_type === 'Radio'">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Card Number</th>
+      <th scope="col">Card titile</th>
+      <th scope="col">Created At</th>
+      <th scope="col">Updated At</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row"></th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+      <td>updated</td>
+      <td>
+        <button class="btn btn-primary" @click.prevent="view_tv_radio_cards">View</button>
+        <button class="btn btn-secondary" @click.prevent="edit_tv_radio_card">Edit</button>
+        <button class="btn btn-danger" @click.prevent="delete_tv_radio_card">delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="table ml-1 mr-5 shadow-lg" v-else>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Card Number</th>
+      <th scope="col">Card titile</th>
+      <th scope="col">Created At</th>
+      <th scope="col">Updated At</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row"></th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+      <td>updated</td>
+      <td>
+        <button class="btn btn-primary" @click.prevent="view_print_cards">View</button>
+        <button class="btn btn-secondary" @click.prevent="edit_print_card">Edit</button>
+        <button class="btn btn-danger" @click.prevent="delete_print_card">delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
     </div>
 </div>
 </div>
@@ -322,10 +375,93 @@
         </div>
       </footer>
 
+
+      <div v-show="showPrintModal">
+    <transition name="modal shadow-lg">
+      <div class="modal-mask">
+        <div class="modal-wrapper">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true" @click="showPrintModal = false">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <form>
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="exampleInputPassword1" >
+                    </div><hr>
+                    <div class="text-center"><h2>Cards</h2></div>
+                    <table class="table ml-1 mr-5">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th scope="col">Advert size</th>
+                          <th scope="col">Slots</th>
+                          <th scope="col">Rate</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(card,key) of cards" :key="key">
+                          <td ><div class="form-group">
+                      <input type="text" class="form-control" v-model="card.advert_size">
+                    </div></td>
+                          <td><div class="form-group">
+                      <input type="text" class="form-control" v-model="card.slot">
+                    </div></td>
+                          <td><div class="form-group">
+                      <input type="text" class="form-control" v-model="card.rate">
+                    </div></td>
+                        <td><button class="btn btn-danger" :id="key" @click.prevent="delete_print_details">X</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @click="showPrintModal = false">Close</button>
+                <button type="button" class="btn btn-primary" @click.prevent="save_print_changes">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+  </div>
+
+
+  <div v-if="showTvModal">
+    <transition name="modal">
+      <div class="modal-mask">
+        <div class="modal-wrapper">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true" @click="showTvModal = false">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Modal body text goes here.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @click="showTvModal = false">Close</button>
+                <button type="button" class="btn btn-primary" @click.prevent="save_tv_changes">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+  </div>
 </div>
 </template>
 
 <script>
+import axios from "axios"
 	export default {
 		name: "MediaViewCards",
 		data(){
@@ -333,14 +469,84 @@
 				error1: "",
 				error2: "",
 				error3: "",
+        media_type: "",
+        all_print_cards: [],
+        all_tv_radio_cards: [],
+        showPrintModal: false,
+        showTvModal: false,
+        cards: [{
+          advert_size: "",
+          slot: "",
+          rate: ""
+        }
+        ]
 			}
 		},
-		mounted(){
+    methods: {
+      delete_print_card(e){
+        let key = e.currentTarget.parentElement.id
 
+        this.cards.splice(key,1)
+
+      },
+      view_print_cards(){
+
+      },
+      edit_print_card(){
+        this.showPrintModal = true
+      },
+      delete_tv_radio_card(e){
+        let key = e.currentTarget.parentElement.id
+
+        this.cards.splice(key,1)
+      },
+      edit_tv_radio_card(){
+        this.showTvModal = true
+      },
+      view_tv_radio_cards(){
+
+      },
+      delete_print_details(e){
+        let key = e.currentTarget.parentElement.id
+        this.cards.splice(key,1)
+      },
+      save_print_changes(){
+        console.log(this.cards)
+      }
+    },
+		mounted(){
+      this.all_print_cards = [{
+        advert_size: "24x8",
+        slot: "3",
+        rate: "500"
+      },
+       {advert_size: "24x8",
+        slot: "3",
+        rate: "500"
+      }]
+      this.cards = this.all_print_cards
 		},
-    beforeCreate(){
-      if(!this.$session.exists()){
-        this.$router.push({path: '/'})
+    async beforeCreate(){
+      // if(!this.$session.exists()){
+      //   this.$router.push({path: '/'})
+      // }
+
+      //fetching all cards available
+
+      try {
+        // statements
+
+        let fetch_all_cards = await axios({
+          url: "",
+          method: "GET"
+        })
+
+        if(fetch_all_cards){
+          console.log(fetch_all_cards)
+        }
+      } catch(e) {
+        // statements
+        console.log(e);
       }
 	}
 }
@@ -349,5 +555,18 @@
 
 <style scoped>
 
+.modal-mask {
+  position: absolute;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: table;
+  transition: opacity .3s ease;
+}
 
+.modal-wrapper {
+  display: table-cell;
+}
 </style>
