@@ -310,6 +310,9 @@
           </ul>
 
         </nav>
+        <div class="text-center" v-show="res_alert">
+    <span class="alert" :class="[alert === 'success'? 'alert-success':' alert-danger']">{{alert_message}}</span>
+  </div>
         <div class="card m-3 shadow">
   <h5 class="card-header">Provide Rate Card Details</h5>
   <div class="card-body">
@@ -322,7 +325,7 @@
     <hr>
     <div class="text-center m-2"><h2>Card Details</h2></div>
   <div class="form-group">
-    <input type="time" class="form-control" v-model="time" placeholder="Enter Time">
+    <input type="text" class="form-control" v-model="time" placeholder="Enter Time frame">
     <span class="text-danger">{{error2}}</span>
   </div>
   <div class="form-group">
@@ -334,8 +337,22 @@
     <span class="text-danger">{{error4}}</span>
   </div>
 <div class="form-group">
-    <input type="number" class="form-control" v-model="Rate" placeholder="Enter Rate(GHS)">
-    <span class="text-danger">{{error5}}</span>
+    <input type="number" class="form-control" v-model="rate_15" placeholder="Enter Rate(GHS) in 15sec">
+  </div>
+  <div class="form-group">
+    <input type="number" class="form-control" v-model="rate_20" placeholder="Enter Rate(GHS) in 20sec">
+  </div>
+  <div class="form-group">
+    <input type="number" class="form-control" v-model="rate_30" placeholder="Enter Rate(GHS) in 30sec">
+  </div>
+  <div class="form-group">
+    <input type="number" class="form-control" v-model="rate_45" placeholder="Enter Rate(GHS) in 45sec">
+  </div>
+  <div class="form-group">
+    <input type="number" class="form-control" v-model="rate_50" placeholder="Enter Rate(GHS) in 50sec">
+  </div>
+  <div class="form-group">
+    <input type="number" class="form-control" v-model="rate_60" placeholder="Enter Rate(GHS) in 60sec">
   </div>
   <div class="text-center">
           <span class="text-success" v-show="loading">
@@ -344,11 +361,13 @@
         </div>
   <button type="submit" class="btn btn-primary" @click.prevent="CreateTvRadioCrad">Create Rate Card</button>
   <button type="submit" class="btn btn-primary float-right" @click.prevent="AddTvRadioCardDetails">+</button>
-  <span class="text-danger">{{error6}}</span>
+  <div class="text-center">
+    <span class="text-danger">{{error6}}</span>
+  </div>
   <hr>
 <div class="row">
   <div class="col-6" v-for="(tv_radio,key) of tv_radio_card_details" :key="key">
-  <button type="submit" class="btn btn-info"><span>Day: {{tv_radio.day}}</span><span>Time: {{tv_radio.time}}</span><span>Slot: {{tv_radio.slot}}</span><span>Rate: {{tv_radio.rate}}</span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemoveTvRadio">X</a></button>
+  <button type="submit" class="btn btn-info"><span>Day: {{tv_radio.day}}</span><span>Time: {{tv_radio.time}}</span><span>Slot: {{tv_radio.slot}}</span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemoveTvRadio">X</a></button>
   </div>
 
 </div>
@@ -376,7 +395,7 @@
   </div>
   <div class="text-center">
           <span class="text-success" v-show="loading">
-          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <span class="spinner-grow spinner-grow-bg" role="status" aria-hidden="true"></span>
         </span>
         </div>
   <button type="submit" class="btn btn-primary" @click.prevent="CreatePrintCard">Create Rate Card</button>
@@ -423,6 +442,7 @@ import axios from 'axios'
         error5: "",
         error6: "",
         media_type: "",
+        Rate: "",
         card_details: "",
         print_card_details: [],
         tv_radio_card_details: [],
@@ -430,9 +450,18 @@ import axios from 'axios'
         title: "",
         slots:"",
         day: "",
-        Rate: "",
         time: "",
-        loading: false
+        loading: false,
+        alert: "",
+        res_alert: false,
+        token: "",
+        alert_message: "",
+        rate_15: "",
+        rate_20: "",
+        rate_30: "",
+        rate_45: "",
+        rate_50: "",
+        rate_60: ""
 			}
 		},
     methods: {
@@ -445,8 +474,6 @@ import axios from 'axios'
         else this.error3 = "";
         if(validator.isEmpty(this.day)) this.error4 = "day is required";
         else this.error4 = "";
-        if(validator.isEmpty(this.Rate)) this.error5 = "Rate is required";
-        else this.error5 = "";
         if(this.tv_radio_card_details.length === 0) this.error6 = "Please click to add card Details";
         else this.error6 = ""
 
@@ -455,29 +482,13 @@ import axios from 'axios'
           !validator.isEmpty(this.time) &&
           !validator.isEmpty(this.slots) &&
           !validator.isEmpty(this.day) &&
-          !validator.isEmpty(this.Rate) &&
           this.tv_radio_card_details.length !== 0
           ){
-          this.loading = true;
-          setTimeout(async function(){
-            try {
-              let media_card_res = await axios({
-                url: "",
-                data: {
-                  title: this.title,
-                  card_details: this.tv_radio_card_details
-                },
-                method: "POST"
-              })
-
-              if(media_card_res){
-                this.loading = false
-                console.log(media_card_res)
-              }
-            } catch(e) {
-              // statements
-              console.log(e);
-            }
+          this.loading = true
+          this.res_alert = false
+          let self = this
+          setTimeout(function(){
+            self.Create_print_card(self.title,self.tv_radio_card_details)
           },300)
         }
 
@@ -493,7 +504,6 @@ import axios from 'axios'
         else this.error4 = "";
         if(this.print_card_details.length === 0) this.error5 = "Please click to add card Details";
         else this.error5 = ""
-
         if(
           !validator.isEmpty(this.title) &&
           !validator.isEmpty(this.Advert_size) &&
@@ -502,28 +512,80 @@ import axios from 'axios'
           this.print_card_details.length !== 0
           ){
           this.loading = true
-          setTimeout(async function(){
-            try {
+          this.res_alert = false
+          let self = this
+          setTimeout(function(){
+            self.Create_print_card(self.title,self.print_card_details)
+          },300)
+        }
+      },
+     async Create_print_card(title,print_card_details){
+         try {
               // statements
+              let data = {
+                title: title,
+                card_details: print_card_details
+              }
+              console.log(data)
               let media_card_res = await axios({
-                url: "",
+                url: "https://media-kokrokooad.herokuapp.com/api/ratecard/create",
                 method: "POST",
-                data: {
-                  title: this.titile,
-                  card_detials: this.print_card_details
-                }
+                headers: {
+                  'Authorization' : 'Bearer ' + this.token
+                },
+                data: data
               })
 
-              if(media_card_res){
+              if(media_card_res.status === 200){
                 this.loading = false
-                console.log(media_card_res)
+                this.alert = "success"
+                this.alert_message = "You have created a New Rate Card"
+                this.res_alert = true
               }
             } catch(e) {
               // statements
-              console.log(e);
+              console.log(e.response);
+              if(e.response.status === 422){
+                this.loading = false
+                this.alert = "error",
+                this.alert_message = "The Card Title Has Already been Created"
+                this.res_alert = true
+              }
             }
-          },300)
-        }
+      },
+     async Create_tv_radio_card(title,tv_radio_card_details){
+            try {
+              // statements
+              let data = {
+                title: title,
+                card_details: tv_radio_card_details
+              }
+              console.log(data)
+              let media_card_res = await axios({
+                url: "https://media-kokrokooad.herokuapp.com/api/ratecard/create",
+                method: "POST",
+                headers: {
+                  'Authorization' : 'Bearer ' + this.token
+                },
+                data: data
+              })
+
+              if(media_card_res.status === 200){
+                this.loading = false
+                this.alert = "success"
+                this.alert_message = "You have created a New Rate Card"
+                this.res_alert = true
+              }
+            } catch(e) {
+              // statements
+              console.log(e.response);
+              if(e.response.status === 422){
+                this.loading = false
+                this.alert = "error",
+                this.alert_message = "The Card Title Has Already been Created"
+                this.res_alert = true
+              }
+            }
       },
       AddPrintCardDetails(){
         console.log(this.Advert_size)
@@ -560,13 +622,18 @@ import axios from 'axios'
               time: this.time,
               day: this.day,
               slot: this.slots,
-              rate: this.Rate
+              rate_15: this.rate_15,
+              rate_20: this.rate_20,
+              rate_30: this.rate_30,
+              rate_45: this.rate_45,
+              rate_50: this.rate_50,
+              rate_60: this.rate_60
             })
           }
           else{
             let added_tv_radio = false
             for(let tv_radio of this.tv_radio_card_details){
-              if(tv_radio.time === this.time && tv_radio.slot === this.slots && tv_radio.rate === this.Rate && tv_radio.day === this.day){
+              if(tv_radio.time === this.time && tv_radio.slot === this.slots && tv_radio.day === this.day){
                 added_tv_radio = true
 
                 return added_tv_radio
@@ -577,10 +644,16 @@ import axios from 'axios'
                 time: this.time,
                 day: this.day,
                 slot: this.slots,
-                rate: this.Rate
+                rate_15: this.rate_15,
+                rate_20: this.rate_20,
+                rate_30: this.rate_30,
+                rate_45: this.rate_45,
+                rate_50: this.rate_50,
+                rate_60: this.rate_60
               })
             }
           }
+          console.log(this.tv_radio_card_details)
       },
       RemovePrint(e){
         let id = e.currentTarget.id
@@ -598,10 +671,32 @@ import axios from 'axios'
 
 		},
     beforeCreate(){
-      // if(!this.$session.exists()){
-      //   this.$router.push({path: '/'})
-      // }
-	}
+      if(!this.$session.exists()){
+        this.$router.push({path: '/'})
+      }
+	},
+  async created(){
+    try {
+      // statement
+      let token = this.$session.get('media-jwt')
+      this.token = token
+      let user_details = await axios({
+        url: "https://media-kokrokooad.herokuapp.com/api/user",
+        method: "GET",
+        headers: {
+          'Authorization': "Bearer " + token
+        }
+      })
+
+      if(user_details.status === 200){
+        this.media_type = user_details.data.company.media_type
+        console.log(user_details)
+      }
+    } catch(e) {
+      // statements
+      console.log(e);
+    }
+  }
 }
 
 </script>

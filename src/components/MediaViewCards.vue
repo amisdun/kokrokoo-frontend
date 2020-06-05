@@ -314,21 +314,15 @@
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Card Number</th>
       <th scope="col">Card titile</th>
-      <th scope="col">Created At</th>
-      <th scope="col">Updated At</th>
       <th scope="col">Actions</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th scope="row"></th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-      <td>updated</td>
-      <td>
+    <tr v-for="(tv_radio_card,key) of all_tv_radio_cards" :key="key">
+      <th scope="row">{{key + 1}}</th>
+      <td>{{tv_radio_card.title}}</td>
+      <td :id="key">
         <button class="btn btn-primary" @click.prevent="view_tv_radio_cards">View</button>
         <button class="btn btn-secondary" @click.prevent="edit_tv_radio_card">Edit</button>
         <button class="btn btn-danger" @click.prevent="delete_tv_radio_card">delete</button>
@@ -341,21 +335,15 @@
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Card Number</th>
       <th scope="col">Card titile</th>
-      <th scope="col">Created At</th>
-      <th scope="col">Updated At</th>
       <th scope="col">Actions</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th scope="row"></th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-      <td>updated</td>
-      <td>
+    <tr v-for="(print_card,key) of all_print_cards" :key="key">
+      <th scope="row">{{key + 1}}</th>
+      <td>{{print_card.title}}</td>
+      <td :id="key">
         <button class="btn btn-primary" @click.prevent="view_print_cards">View</button>
         <button class="btn btn-secondary" @click.prevent="edit_print_card">Edit</button>
         <button class="btn btn-danger" @click.prevent="delete_print_card">delete</button>
@@ -391,10 +379,10 @@
               <div class="modal-body">
                   <form>
                     <div class="form-group">
-                      <input type="text" class="form-control" id="exampleInputPassword1" >
+                      <input type="text" class="form-control" v-model="print_title" placeholder="title" id="exampleInputPassword1" >
                     </div><hr>
                     <div class="text-center"><h2>Cards</h2></div>
-                    <table class="table ml-1 mr-5">
+                    <table class="table ml-1 mr-5 table-responsive">
                       <thead class="thead-dark">
                         <tr>
                           <th scope="col">Advert size</th>
@@ -404,7 +392,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr v-for="(card,key) of cards" :key="key">
+                        <tr v-for="(card,key) of print_cards" :key="key">
                           <td ><div class="form-group">
                       <input type="text" class="form-control" v-model="card.advert_size">
                     </div></td>
@@ -421,6 +409,7 @@
                   </form>
               </div>
               <div class="modal-footer">
+                <button type="button" class="btn btn-primary float-left" @click.prevent="new_card">new card</button>
                 <button type="button" class="btn btn-secondary" @click="showPrintModal = false">Close</button>
                 <button type="button" class="btn btn-primary" @click.prevent="save_print_changes">Save changes</button>
               </div>
@@ -432,7 +421,7 @@
   </div>
 
 
-  <div v-if="showTvModal">
+  <div v-show="showTvModal">
     <transition name="modal">
       <div class="modal-mask">
         <div class="modal-wrapper">
@@ -445,7 +434,60 @@
                 </button>
               </div>
               <div class="modal-body">
-                <p>Modal body text goes here.</p>
+                  <form>
+                    <div class="form-group">
+                      <input type="text" class="form-control" v-model="print_title" placeholder="title" id="exampleInputPassword1" >
+                    </div><hr>
+                    <div class="text-center"><h2>Cards</h2></div>
+                    <table class="table ml-1 mr-5 table-responsive">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th scope="col">day</th>
+                          <th scope="col">time</th>
+                          <th scope="col">slots</th>
+                          <th scope="col">Rate(15sec)</th>
+                          <th scope="col">Rate(20sec)</th>
+                          <th scope="col">Rate(30sec)</th>
+                          <th scope="col">Rate(45sec)</th>
+                          <th scope="col">Rate(50sec)</th>
+                          <th scope="col">Rate(60sec)</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(card,key) of tv_cards" :key="key">
+                          <td ><div class="form-group">
+                      <input type="text" class="form-control" v-model="card.day">
+                    </div></td>
+                          <td><div class="form-group">
+                      <input type="text" class="form-control" v-model="card.time">
+                    </div></td>
+                    <td><div class="form-group">
+                      <input type="text" class="form-control" v-model="card.slot">
+                    </div></td>
+                    <td><div class="form-group">
+                      <input type="text" class="form-control" v-model="card.rate_15">
+                    </div></td>
+                    <td><div class="form-group">
+                      <input type="text" class="form-control" v-model="card.rate_20">
+                    </div></td>
+                    <td><div class="form-group">
+                      <input type="text" class="form-control" v-model="card.rate_30">
+                    </div></td>
+                    <td><div class="form-group">
+                      <input type="text" class="form-control" v-model="card.rate_45">
+                    </div></td>
+                    <td><div class="form-group">
+                      <input type="text" class="form-control" v-model="card.rate_50">
+                    </div></td>
+                    <td><div class="form-group">
+                      <input type="text" class="form-control" v-model="card.rate_60">
+                    </div></td>
+                        <td><button class="btn btn-danger" :id="key" @click.prevent="delete_tv_radio_card">X</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" @click="showTvModal = false">Close</button>
@@ -469,86 +511,144 @@ import axios from "axios"
 				error1: "",
 				error2: "",
 				error3: "",
+        print_title: "",
+        tv_radio: "",
         media_type: "",
         all_print_cards: [],
         all_tv_radio_cards: [],
         showPrintModal: false,
         showTvModal: false,
-        cards: [{
+        print_cards: [{
           advert_size: "",
           slot: "",
           rate: ""
         }
-        ]
+        ],
+        tv_cards: [{
+          day: "",
+          time: "",
+          slot: "",
+          rate_15: "",
+          rate_20: "",
+          rate_30: "",
+          rate_45: "",
+          rate_50: "",
+          rate_60: ""
+        }],
+        token: ""
 			}
 		},
     methods: {
       delete_print_card(e){
         let key = e.currentTarget.parentElement.id
 
-        this.cards.splice(key,1)
+        this.print_cards.splice(key,1)
 
       },
       view_print_cards(){
 
       },
-      edit_print_card(){
+      edit_print_card(e){
         this.showPrintModal = true
+        let index = e.currentTarget.parentElement.id
+        this.print_cards = this.all_print_cards[index].card_details
+        this.print_title = this.all_print_cards[index].title
       },
       delete_tv_radio_card(e){
-        let key = e.currentTarget.parentElement.id
-
-        this.cards.splice(key,1)
+        let key = e.currentTarget.id
+        this.tv_cards.splice(key,1)
       },
-      edit_tv_radio_card(){
+      edit_tv_radio_card(e){
         this.showTvModal = true
+        let index = e.currentTarget.parentElement.id
+        this.tv_cards = this.all_tv_radio_cards[index].card_details
+        this.tv_title = this.all_tv_radio_cards[index].title
       },
       view_tv_radio_cards(){
 
       },
       delete_print_details(e){
-        let key = e.currentTarget.parentElement.id
-        this.cards.splice(key,1)
-      },
+        let key = e.currentTarget.id
+        this.print_cards.splice(key,1)
+        },
       save_print_changes(){
-        console.log(this.cards)
+        console.log(this.print_cards)
+      },
+      new_print_card(){
+        this.print_cards.push({
+          advert_size: "",
+          slot: "",
+          rate: ""
+        })
+      },
+      new_tv_radio_card(){
+        this.tv_cards.push({
+          day: "",
+          time: "",
+          slot: "",
+          rate_15: "",
+          rate_20: "",
+          rate_30: "",
+          rate_45: "",
+          rate_50: "",
+          rate_60: ""
+        })
       }
     },
 		mounted(){
-      this.all_print_cards = [{
-        advert_size: "24x8",
-        slot: "3",
-        rate: "500"
-      },
-       {advert_size: "24x8",
-        slot: "3",
-        rate: "500"
-      }]
-      this.cards = this.all_print_cards
 		},
     async beforeCreate(){
-      // if(!this.$session.exists()){
-      //   this.$router.push({path: '/'})
-      // }
+      if(!this.$session.exists()){
+        this.$router.push({path: '/'})
+      }
 
       //fetching all cards available
+	},
+ async created(){
+        let token = this.$session.get('media-jwt')
+        this.token = token
 
-      try {
+        try {
+      // statement
+      let user_details = await axios({
+        url: "https://media-kokrokooad.herokuapp.com/api/user",
+        method: "GET",
+        headers: {
+          'Authorization': "Bearer " + token
+        }
+      })
+
+      if(user_details.status === 200){
+        this.media_type = user_details.data.company.media_type
+        console.log(user_details)
+      }
+    } catch(e) {
+      // statements
+      console.log(e);
+    }
+
+    try {
         // statements
-
         let fetch_all_cards = await axios({
-          url: "",
-          method: "GET"
+          url: "https://media-kokrokooad.herokuapp.com/api/ratecard/company-ratecards",
+          method: "GET",
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
         })
-
-        if(fetch_all_cards){
-          console.log(fetch_all_cards)
+        console.log(this.media_type)
+        if(this.media_type === "TV" || this.media_type === "Radio"){
+          this.all_tv_radio_cards = fetch_all_cards.data
+        }
+        if(this.media_type === "print"){
+          this.all_print_cards = fetch_all_cards.data
         }
       } catch(e) {
         // statements
         console.log(e);
       }
-	}
+
+  }
 }
 
 </script>
@@ -560,7 +660,7 @@ import axios from "axios"
   z-index: 9998;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 800%;
   height: 100%;
   display: table;
   transition: opacity .3s ease;
