@@ -12,6 +12,7 @@ import './assets/vendor/fontawesome-free/css/all.min.css'
 // import './assets/vendor/js/demo/chart-area-demo.js'
 import axios from 'axios'
 import VueSession from 'vue-session'
+import VModal from 'vue-js-modal'
 import LoadScript from 'vue-plugin-load-script';
 import UserSignIn from './components/UserSignIn.vue'
 import MediaDashboard from './components/MediaDashboard.vue'
@@ -25,7 +26,7 @@ import MediaViewCards from './components/MediaViewCards.vue'
 import MediaSubscriptions from './components/MediaSubscriptions.vue'
 import MediaTransactions from './components/MediaTransactions.vue'
 
-
+Vue.use(VModal)
 Vue.use(LoadScript)
 Vue.use(VueRouter)
 Vue.use(VueSession)

@@ -324,14 +324,14 @@
       <td>{{tv_radio_card.title}}</td>
       <td :id="key">
         <button class="btn btn-primary" @click.prevent="view_tv_radio_cards">View</button>
-        <button class="btn btn-secondary" @click.prevent="edit_tv_radio_card">Edit</button>
-        <button class="btn btn-danger" @click.prevent="delete_tv_radio_card">delete</button>
+        <button class="btn btn-secondary" :value="tv_radio_card.id" @click.prevent="edit_tv_radio_card">Edit</button>
+        <button class="btn btn-danger" :id="tv_radio.id" @click.prevent="delete_tv_radio_card">delete</button>
       </td>
     </tr>
   </tbody>
 </table>
 
-<table class="table ml-1 mr-5 shadow-lg" v-else>
+<table class="table ml-1 mr-5 shadow-lg" v-else-if="media_type === 'print'">
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
@@ -346,7 +346,7 @@
       <td :id="key">
         <button class="btn btn-primary" @click.prevent="view_print_cards">View</button>
         <button class="btn btn-secondary" @click.prevent="edit_print_card">Edit</button>
-        <button class="btn btn-danger" @click.prevent="delete_print_card">delete</button>
+        <button class="btn btn-danger" :id="print_card.id" @click.prevent="delete_print_card">delete</button>
       </td>
     </tr>
   </tbody>
@@ -420,23 +420,18 @@
     </transition>
   </div>
 
-
-  <div v-show="showTvModal">
-    <transition name="modal">
-      <div class="modal-mask">
-        <div class="modal-wrapper">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true" @click="showTvModal = false">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                  <form>
-                    <div class="form-group">
-                      <input type="text" class="form-control" v-model="print_title" placeholder="title" id="exampleInputPassword1" >
+    <modal name="tv_radio_modal"
+        width='95%'
+        height='auto'
+    >
+    <div slot="top-right">
+      <button @click="$modal.hide('tv_radio_modal')">
+        X
+      </button>
+    </div>
+      <form class="m-5">
+                    <div class="form-group text">
+                      <input type="text" class="form-control w-50" v-model="tv_title" placeholder="title" id="exampleInputPassword1" >
                     </div><hr>
                     <div class="text-center"><h2>Cards</h2></div>
                     <table class="table ml-1 mr-5 table-responsive">
@@ -460,7 +455,7 @@
                       <input type="text" class="form-control" v-model="card.day">
                     </div></td>
                           <td><div class="form-group">
-                      <input type="text" class="form-control" v-model="card.time">
+                      <input type="text" class="form-control display-4" v-model="card.time">
                     </div></td>
                     <td><div class="form-group">
                       <input type="text" class="form-control" v-model="card.slot">
@@ -483,22 +478,45 @@
                     <td><div class="form-group">
                       <input type="text" class="form-control" v-model="card.rate_60">
                     </div></td>
-                        <td><button class="btn btn-danger" :id="key" @click.prevent="delete_tv_radio_card">X</button></td>
+                        <td><button class="btn btn-danger" :id="key" @click.prevent="delete_tv_radio_card_details">X</button></td>
                         </tr>
                       </tbody>
                     </table>
                   </form>
+                  <div class="m-3 float-left">
+                     <button type="button" class="btn btn-secondary mr-1" @click.prevent="new_tv_radio_card">Add new Card</button>
+                  </div>
+                  <div class="m-3 float-right">
+
+                  <button type="button" class="btn btn-secondary mr-1" @click.prevent="close_tv_radio_modal">Close</button>
+                <button type="button" class="btn btn-primary" @click.prevent="save_tv_changes">Save changes</button>
+                  </div>
+    </modal>
+
+  <!-- <div v-show="showTvModal">
+    <transition name="modal">
+      <div class="modal-mask">
+        <div class="modal-wrapper">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true" @click="showTvModal = false">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" @click="showTvModal = false">Close</button>
-                <button type="button" class="btn btn-primary" @click.prevent="save_tv_changes">Save changes</button>
+
               </div>
             </div>
           </div>
         </div>
       </div>
     </transition>
-  </div>
+  </div> -->
 </div>
 </template>
 
@@ -512,12 +530,14 @@ import axios from "axios"
 				error2: "",
 				error3: "",
         print_title: "",
+        update_tv_radio: "",
+        update_print: "",
+        tv_title: "",
         tv_radio: "",
         media_type: "",
         all_print_cards: [],
         all_tv_radio_cards: [],
         showPrintModal: false,
-        showTvModal: false,
         print_cards: [{
           advert_size: "",
           slot: "",
@@ -541,9 +561,9 @@ import axios from "axios"
     methods: {
       delete_print_card(e){
         let key = e.currentTarget.parentElement.id
-
+        let delete_id = e.currentTarget.id
+        console.log(delete_id)
         this.print_cards.splice(key,1)
-
       },
       view_print_cards(){
 
@@ -554,15 +574,27 @@ import axios from "axios"
         this.print_cards = this.all_print_cards[index].card_details
         this.print_title = this.all_print_cards[index].title
       },
-      delete_tv_radio_card(e){
+      delete_tv_radio_card_details(e){
         let key = e.currentTarget.id
         this.tv_cards.splice(key,1)
       },
+      delete_tv_radio_card(e){
+        let id = e.currentTarget.parentElement.id
+        let delete_id = e.currentTarget.id
+        console.log(delete_id)
+        this.all_tv_radio_cards.splice(id,1)
+      },
       edit_tv_radio_card(e){
-        this.showTvModal = true
+        this.$modal.show('tv_radio_modal')
         let index = e.currentTarget.parentElement.id
         this.tv_cards = this.all_tv_radio_cards[index].card_details
         this.tv_title = this.all_tv_radio_cards[index].title
+
+        let update_id = e.currentTarget.value
+        this.update_tv_radio = update_id
+      },
+      close_tv_radio_modal(){
+        this.$modal.hide('tv_radio_modal')
       },
       view_tv_radio_cards(){
 
@@ -571,8 +603,51 @@ import axios from "axios"
         let key = e.currentTarget.id
         this.print_cards.splice(key,1)
         },
-      save_print_changes(){
-        console.log(this.print_cards)
+      async save_print_changes(){
+        try {
+          // statements
+          // let data = {
+          //   title: this.print_title,
+          //   card_details: this.print_cards
+          // }
+
+          let update = await axios({
+            url: `https://media-kokrokooad.herokuapp.com/api/ratecard/{}/update`,
+            method: "PATCH",
+
+          })
+          if(update){
+            console.log(update)
+          }
+        } catch(e) {
+          // statements
+          console.log(e);
+        }
+      },
+      async save_tv_changes(){
+        try {
+          // statements
+          let data = {
+            title: this.tv_title,
+            card_details: this.tv_cards
+          }
+          let update = await axios({
+            url: "https://media-kokrokooad.herokuapp.com/api/ratecard/" + this.update_tv_radio +"/update",
+            method: "PATCH",
+            headers: {
+              'Authorization': 'Bearer ' + this.token
+            },
+            data: data
+          })
+
+          if(update.status === "200"){
+            console.log(update)
+          }
+        } catch(e) {
+          // statements
+          console.log(e);
+        }
+
       },
       new_print_card(){
         this.print_cards.push({
@@ -597,7 +672,7 @@ import axios from "axios"
     },
 		mounted(){
 		},
-    async beforeCreate(){
+    beforeCreate(){
       if(!this.$session.exists()){
         this.$router.push({path: '/'})
       }
@@ -639,6 +714,7 @@ import axios from "axios"
         console.log(this.media_type)
         if(this.media_type === "TV" || this.media_type === "Radio"){
           this.all_tv_radio_cards = fetch_all_cards.data
+          console.log(this.all_tv_radio_cards)
         }
         if(this.media_type === "print"){
           this.all_print_cards = fetch_all_cards.data

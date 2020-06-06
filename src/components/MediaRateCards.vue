@@ -374,7 +374,7 @@
 
 </form>
 
-<form v-else>
+<form v-else-if="media_type === 'print'">
 <div class="form-group">
     <input type="text" class="form-control" v-model="title" placeholder="Enter Title">
     <span class="text-danger">{{error1}}</span>
