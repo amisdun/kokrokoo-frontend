@@ -371,6 +371,9 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
+                <div class="text-center mt-2" v-show="res_alert">
+    <span class="alert" :class="[alert === 'success'? 'alert-success':' alert-danger']">{{alert_message}}</span>
+  </div>
                 <h5 class="modal-title">Modal title</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true" @click="showPrintModal = false">&times;</span>
@@ -406,6 +409,11 @@
                         </tr>
                       </tbody>
                     </table>
+                    <div class="text-center">
+          <span class="text-success" v-show="loading">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </span>
+        </div>
                   </form>
               </div>
               <div class="modal-footer">
@@ -424,11 +432,9 @@
         width='95%'
         height='auto'
     >
-    <div slot="top-right">
-      <button @click="$modal.hide('tv_radio_modal')">
-        X
-      </button>
-    </div>
+    <div class="text-center mt-2" v-show="res_alert">
+    <span class="alert" :class="[alert === 'success'? 'alert-success':' alert-danger']">{{alert_message}}</span>
+  </div>
       <form class="m-5">
                     <div class="form-group text">
                       <input type="text" class="form-control w-50" v-model="tv_title" placeholder="title" id="exampleInputPassword1" >
@@ -482,12 +488,16 @@
                         </tr>
                       </tbody>
                     </table>
+                    <div class="text-center">
+          <span class="text-success" v-show="loading">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </span>
+        </div>
                   </form>
                   <div class="m-3 float-left">
                      <button type="button" class="btn btn-secondary mr-1" @click.prevent="new_tv_radio_card">Add new Card</button>
                   </div>
                   <div class="m-3 float-right">
-
                   <button type="button" class="btn btn-secondary mr-1" @click.prevent="close_tv_radio_modal">Close</button>
                 <button type="button" class="btn btn-primary" @click.prevent="save_tv_changes">Save changes</button>
                   </div>
@@ -553,9 +563,13 @@ import axios from "axios"
           rate_30: "",
           rate_45: "",
           rate_50: "",
-          rate_60: ""
+          rate_60: "",
         }],
-        token: ""
+        token: "",
+        res_alert: false,
+        alert_message: "",
+        alert: "",
+        loading: false
 			}
 		},
     methods: {
@@ -573,6 +587,10 @@ import axios from "axios"
         let index = e.currentTarget.parentElement.id
         this.print_cards = this.all_print_cards[index].card_details
         this.print_title = this.all_print_cards[index].title
+
+        let update_id = e.currentTarget.value
+
+        this.update_print = update_id
       },
       delete_tv_radio_card_details(e){
         let key = e.currentTarget.id
@@ -604,20 +622,28 @@ import axios from "axios"
         this.print_cards.splice(key,1)
         },
       async save_print_changes(){
+        this.loading = true
         try {
           // statements
-          // let data = {
-          //   title: this.print_title,
-          //   card_details: this.print_cards
-          // }
+          let data = {
+            title: this.print_title,
+            card_details: this.print_cards
+          }
+          this.res_alert = false
 
           let update = await axios({
-            url: `https://media-kokrokooad.herokuapp.com/api/ratecard/{}/update`,
+            url: "https://media-kokrokooad.herokuapp.com/api/ratecard/" + this.update_print + "/update",
             method: "PATCH",
-
+            data: data,
+            headers: {
+              'Authorization': 'Bearer ' + this.token
+            }
           })
-          if(update){
-            console.log(update)
+          if(update.status === 200){
+            this.loading = false
+            this.alert = "success"
+            this.alert_message = "You have successfuly updated the card"
+            this.res_alert = true
           }
         } catch(e) {
           // statements
@@ -625,12 +651,14 @@ import axios from "axios"
         }
       },
       async save_tv_changes(){
+        this.loading = true
         try {
           // statements
           let data = {
             title: this.tv_title,
             card_details: this.tv_cards
           }
+          this.res_alert = false
           let update = await axios({
             url: "https://media-kokrokooad.herokuapp.com/api/ratecard/" + this.update_tv_radio +"/update",
             method: "PATCH",
@@ -640,8 +668,11 @@ import axios from "axios"
             data: data
           })
 
-          if(update.status === "200"){
-            console.log(update)
+          if(update.status === 200){
+            this.loading = false
+            this.alert = "success"
+            this.alert_message = "You have successfuly updated the card"
+            this.res_alert = true
           }
         } catch(e) {
           // statements

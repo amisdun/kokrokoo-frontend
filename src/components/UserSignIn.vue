@@ -1,6 +1,6 @@
 <template>
     <div>
-    <div class="container">
+    <div class="container shadow-lg">
     <div class="card card-login mx-auto mt-5">
       <div class="alert text-center" :class="[server_res == 'success'? 'alery-success':'alert-danger']" v-show="res_show" role="alert">
           {{message}}
