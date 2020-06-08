@@ -323,15 +323,16 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="(tv_radio_card,key) of all_tv_radio_cards" :key="key">
+    <tr v-for="(tv_radio_card,key) of all_tv_radio_cards" :id="key" :key="key">
       <th scope="row">{{key + 1}}</th>
       <td>{{tv_radio_card.title}}</td>
-      <td :id="key">
+      <td>
         <button class="btn btn-secondary mr-2" :value="tv_radio_card.id" @click.prevent="edit_tv_radio_card">View</button>
         <button class="btn btn-danger" :id="tv_radio_card.id" @click.prevent="delete_tv_radio_card">delete</button>
       </td>
       <td>
-        <button class="btn btn-danger" @click.prevent="activate_tv_radio_card">Not activated</button>
+        <button class="btn btn-success" :value="tv_radio_card.id" @click.prevent="activate_tv_radio_card" v-if="tv_radio_card.status === true">Activated</button>
+        <button class="btn btn-secondary" :value="tv_radio_card.id" @click.prevent="activate_tv_radio_card" v-else>Dactivated</button>
       </td>
     </tr>
   </tbody>
@@ -348,15 +349,16 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="(print_card,key) of all_print_cards" :key="key">
+    <tr v-for="(print_card,key) of all_print_cards" :id="key" :key="key">
       <th scope="row">{{key + 1}}</th>
       <td>{{print_card.title}}</td>
-      <td :id="key">
+      <td>
         <button class="btn btn-secondary mr-2" :value="print_card.id" @click.prevent="edit_print_card">View</button>
         <button class="btn btn-danger" :id="print_card.id" @click.prevent="delete_print_card">delete</button>
       </td>
       <td>
-        <button class="btn btn-danger" @click.prevent="activate_print_card">Not activated</button>
+        <button class="btn btn-success" :value="print_card.id" @click.prevent="activate_print_card" v-if="print_card.status === true">Activated</button>
+        <button class="btn btn-secondary" :value="print_card.id" @click.prevent="activate_print_card" v-else>Dactivated</button>
       </td>
     </tr>
   </tbody>
@@ -455,45 +457,46 @@
                       <thead class="thead-dark">
                         <tr>
                           <th scope="col">day</th>
-                          <th scope="col">time</th>
+                          <th scope="col">time_frame</th>
                           <th scope="col">slots</th>
-                          <th scope="col">Rate(15sec)</th>
-                          <th scope="col">Rate(20sec)</th>
-                          <th scope="col">Rate(30sec)</th>
-                          <th scope="col">Rate(45sec)</th>
-                          <th scope="col">Rate(50sec)</th>
-                          <th scope="col">Rate(60sec)</th>
-                          <th scope="col">Action</th>
+                          <th scope="col">duration</th>
+                          <th scope="col">Rate</th>
+                          <th scope="col">unit</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr v-for="(card,key) of tv_cards" :key="key">
                           <td ><div class="form-group">
-                      <input type="text" class="form-control" v-model="card.day">
+                      <select class="form-control" v-model="card.day">
+                        <option value="">Select day</option>
+                        <option>Monday</option>
+                        <option>Tuesday</option>
+                        <option>Wednesday</option>
+                        <option>Thursday</option>
+                        <option>Friday</option>
+                        <option>Saturday</option>
+                        <option>Sunday</option>
+                      </select>
                     </div></td>
                           <td><div class="form-group">
                       <input type="text" class="form-control display-4" v-model="card.time">
                     </div></td>
                     <td><div class="form-group">
-                      <input type="text" class="form-control" v-model="card.slot">
+                      <input type="text" class="form-control" v-model="card.spot">
                     </div></td>
                     <td><div class="form-group">
-                      <input type="text" class="form-control" v-model="card.rate_15">
+                      <input type="text" class="form-control" v-model="card.duration">
                     </div></td>
                     <td><div class="form-group">
-                      <input type="text" class="form-control" v-model="card.rate_20">
+                      <input type="text" class="form-control" v-model="card.rate">
                     </div></td>
                     <td><div class="form-group">
-                      <input type="text" class="form-control" v-model="card.rate_30">
-                    </div></td>
-                    <td><div class="form-group">
-                      <input type="text" class="form-control" v-model="card.rate_45">
-                    </div></td>
-                    <td><div class="form-group">
-                      <input type="text" class="form-control" v-model="card.rate_50">
-                    </div></td>
-                    <td><div class="form-group">
-                      <input type="text" class="form-control" v-model="card.rate_60">
+                      <select class="form-control" v-model="card.unit">
+                          <option value="">Unit</option>
+                      <option>Sec</option>
+                      <option>Hr</option>
+                      <option>Min</option>
+                    </select>
                     </div></td>
                         <td><button class="btn btn-danger" :id="key" @click.prevent="delete_tv_radio_card_details">X</button></td>
                         </tr>
@@ -568,13 +571,10 @@ import axios from "axios"
         tv_cards: [{
           day: "",
           time: "",
-          slot: "",
-          rate_15: "",
-          rate_20: "",
-          rate_30: "",
-          rate_45: "",
-          rate_50: "",
-          rate_60: "",
+          spot: "",
+          rate: "",
+          duration: "",
+          unit: ""
         }],
         token: "",
         res_alert: false,
@@ -586,7 +586,7 @@ import axios from "axios"
 		},
     methods: {
      async delete_print_card(e){
-        let key = e.currentTarget.parentElement.id
+        let key = e.currentTarget.parentElement.parentElement.id
         let delete_id = e.currentTarget.id
         console.log(delete_id)
         this.all_print_cards.splice(key,1)
@@ -609,7 +609,7 @@ import axios from "axios"
       },
       edit_print_card(e){
         this.showPrintModal = true
-        let index = e.currentTarget.parentElement.id
+        let index = e.currentTarget.parentElement.parentElement.id
         this.print_cards = this.all_print_cards[index].card_details
         this.print_title = this.all_print_cards[index].title
 
@@ -622,7 +622,7 @@ import axios from "axios"
         this.tv_cards.splice(key,1)
       },
      async delete_tv_radio_card(e){
-        let id = e.currentTarget.parentElement.id
+        let id = e.currentTarget.parentElement.parentElement.id
         let delete_id = e.currentTarget.id
         console.log(delete_id)
         this.all_tv_radio_cards.splice(id,1)
@@ -642,9 +642,54 @@ import axios from "axios"
           console.log(e);
         }
       },
+      async activate_tv_radio_card(e){
+        let index = e.currentTarget.parentElement.parentElement.id
+        console.log(index)
+        let id = e.currentTarget.value
+        console.log(id)
+        try {
+          // statements
+          let activate = await axios({
+            url: "https://media-kokrokooad.herokuapp.com/api/ratecard/"+ id + "/activate",
+            method: "POST",
+            headers:{
+              'Authorization': 'Bearer ' + this.token
+            }
+          })
+          if(activate.status === 200){
+            this.all_tv_radio_cards[index].status = true
+          }
+        } catch(e) {
+          // statements
+          console.log(e);
+        }
+      },
+      async activate_print_card(e){
+        let index = e.currentTarget.parentElement.parentElement.id
+        console.log(index)
+        let id = e.currentTarget.value
+        console.log(id)
+
+        try {
+          // statements
+          let activate = await axios({
+            url: "https://media-kokrokooad.herokuapp.com/api/ratecard/"+ id + "/activate",
+            method: "POST",
+            headers:{
+              'Authorization': 'Bearer ' + this.token
+            }
+          })
+          if(activate.status === 200){
+            this.all_print_cards[index].status = true
+          }
+        } catch(e) {
+          // statements
+          console.log(e);
+        }
+      },
       edit_tv_radio_card(e){
         this.$modal.show('tv_radio_modal')
-        let index = e.currentTarget.parentElement.id
+        let index = e.currentTarget.parentElement.parentElement.id
         this.tv_cards = this.all_tv_radio_cards[index].card_details
         this.tv_title = this.all_tv_radio_cards[index].title
 
@@ -732,12 +777,9 @@ import axios from "axios"
           day: "",
           time: "",
           slot: "",
-          rate_15: "",
-          rate_20: "",
-          rate_30: "",
-          rate_45: "",
-          rate_50: "",
-          rate_60: ""
+          duration: "",
+          rate: "",
+          unit: ""
         })
       }
     },

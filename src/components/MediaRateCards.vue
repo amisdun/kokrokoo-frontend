@@ -364,7 +364,7 @@
   </div>
   <div class="form-row">
     <div class="form-group col-md-6">
-    <input type="text" class="form-control" v-model="duration" placeholder="Enter duration">
+    <input type="number" class="form-control" v-model="duration" placeholder="Enter duration">
     <span class="text-danger">{{error6}}</span>
   </div>
   <div class="form-group col-md-4">
@@ -387,14 +387,14 @@
         </span>
         </div>
   <button type="submit" class="btn btn-primary" @click.prevent="CreateTvRadioCrad">Create Rate Card</button>
-  <button type="submit" class="btn btn-primary float-right" @click.prevent="AddTvRadioCardDetails">+</button>
-  <div class="text-center">
+  <button type="submit" class="btn btn-primary float-right" @click.prevent="AddTvRadioCardDetails">+</button><br>
+  <div class="text-center float-right">
     <span class="text-danger">{{error9}}</span>
-  </div>
+  </div><br>
   <hr>
 <div class="row">
-  <div class="col-6" v-for="(tv_radio,key) of tv_radio_card_details" :key="key">
-  <button type="submit" class="btn btn-info"><span>Day: {{tv_radio.day}}</span><span>Time: {{tv_radio.time}}</span><span>Slot: {{tv_radio.slot}}</span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemoveTvRadio">X</a></button>
+  <div class="col-8" v-for="(tv_radio,key) of tv_radio_card_details" :key="key">
+  <button type="submit" class="btn btn-info"><span> Day: {{tv_radio.day}}; </span><span> Time: {{tv_radio.time}}; </span><span> Slot: {{tv_radio.spot}}; </span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemoveTvRadio">X</a></button>
   </div>
 
 </div>
@@ -433,7 +433,7 @@
 <hr>
 <div class="row">
   <div class="col-md-6 mt-2 mb-2" v-for="(print,key) of print_card_details" :key="key">
-  <button type="submit" class="btn btn-info"><span>Advert Size: {{print.advert_size}} </span><span>Slots:  {{print.slot}} </span><span>Rate: {{print.rate}}</span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemovePrint">X</a></button>
+  <button type="submit" class="btn btn-info"><span>Advert Size: {{print.advert_size}}; </span><span>Slots:  {{print.slot}}; </span><span>Rate: {{print.rate}}</span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemovePrint">X</a></button>
   </div>
 </div>
 </form>
@@ -472,49 +472,63 @@ import axios from 'axios'
         error8: "",
         error9: "",
         media_type: "",
-        Rate: "",
         card_details: "",
         print_card_details: [],
         tv_radio_card_details: [],
         Advert_size: "",
         title: "",
-        slots:"",
+        spots:"",
+        time_from: "",
+        time_to: "",
         day: "",
-        time: "",
+        rate: "",
+        unit: "",
+        duration: "",
         loading: false,
         alert: "",
         res_alert: false,
         token: "",
-        unit: "",
         alert_message: "",
         preloader: true
 			}
 		},
     methods: {
       CreateTvRadioCrad(){
+        console.log(this.title)
         if(validator.isEmpty(this.title)) this.error1 = "title is required";
         else this.error1 = "";
-        if(validator.isEmpty(this.time)) this.error2 = "time is required";
+        if(validator.isEmpty(this.day)) this.error2 = "day is required";
         else this.error2 = "";
-        if(validator.isEmpty(this.slots)) this.error3 = "slots required";
+        if(validator.isEmpty(this.time_from)) this.error3 = "time from is required";
         else this.error3 = "";
-        if(validator.isEmpty(this.day)) this.error4 = "day is required";
+        if(validator.isEmpty(this.time_to)) this.error4 = "time_to is required";
         else this.error4 = "";
-        if(this.tv_radio_card_details.length === 0) this.error6 = "Please click to add card Details";
-        else this.error6 = ""
+        if(validator.isEmpty(this.spots)) this.error5 = "spots required";
+        else this.error5 = "";
+        if(validator.isEmpty(this.duration)) this.error6 = "duration required";
+        else this.error6 = "";
+        if(validator.isEmpty(this.rate)) this.error7 = "rate required";
+        else this.error7 = "";
+        if(validator.isEmpty(this.unit)) this.error8 = "unit required";
+        else this.error8 = "";
+        if(this.tv_radio_card_details.length === 0) this.error9 = "Please click to add card Details";
+        else this.error9 = ""
 
         if(
           !validator.isEmpty(this.title) &&
-          !validator.isEmpty(this.time) &&
-          !validator.isEmpty(this.slots) &&
+          !validator.isEmpty(this.spots) &&
           !validator.isEmpty(this.day) &&
+          !validator.isEmpty(this.time_from) &&
+          !validator.isEmpty(this.time_to) &&
+          !validator.isEmpty(this.rate) &&
+          !validator.isEmpty(this.unit) &&
           this.tv_radio_card_details.length !== 0
           ){
           this.loading = true
           this.res_alert = false
           let self = this
           setTimeout(function(){
-            self.Create_print_card(self.title,self.tv_radio_card_details)
+            self.Create_tv_radio_card(self.title,self.tv_radio_card_details)
           },300)
         }
 
@@ -647,21 +661,20 @@ import axios from 'axios'
       AddTvRadioCardDetails(){
         if(this.tv_radio_card_details.length < 1){
             this.tv_radio_card_details.push({
-              time: this.time,
+              time: this.time_from + " - " + this.time_to,
               day: this.day,
-              slot: this.slots,
-              rate_15: this.rate_15,
-              rate_20: this.rate_20,
-              rate_30: this.rate_30,
-              rate_45: this.rate_45,
-              rate_50: this.rate_50,
-              rate_60: this.rate_60
+              spot: this.spots,
+              rate: this.rate + "GHS",
+              duration: this.duration,
+              unit: this.unit
             })
           }
           else{
             let added_tv_radio = false
             for(let tv_radio of this.tv_radio_card_details){
-              if(tv_radio.time === this.time && tv_radio.slot === this.slots && tv_radio.day === this.day){
+              if(tv_radio.time === this.time && tv_radio.spot === this.spots && tv_radio.day === this.day &&
+                  tv_radio.rate === this.rate && tv_radio.duration === this.duration && tv_radio.unit === this.unit
+                ){
                 added_tv_radio = true
 
                 return added_tv_radio
@@ -669,15 +682,12 @@ import axios from 'axios'
             }
             if(added_tv_radio === false){
               this.tv_radio_card_details.push({
-                time: this.time,
+                time: this.time_from + this.time_to,
                 day: this.day,
-                slot: this.slots,
-                rate_15: this.rate_15,
-                rate_20: this.rate_20,
-                rate_30: this.rate_30,
-                rate_45: this.rate_45,
-                rate_50: this.rate_50,
-                rate_60: this.rate_60
+                spot: this.spots,
+                rate: this.rate,
+                duration: this.duration,
+                unit: this.unit
               })
             }
           }
