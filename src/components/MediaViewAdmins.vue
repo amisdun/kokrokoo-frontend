@@ -41,6 +41,8 @@
             <h6 class="collapse-header">Rate cards:</h6>
             <router-link class="collapse-item" to="/Media/RateCards">Create</router-link>
             <router-link class="collapse-item" to="/Media/ViewCards">View Cards</router-link>
+            <router-link class="collapse-item" to="/Media/CreateFromExisting">Create From Existing</router-link>
+
           </div>
         </div>
       </li>

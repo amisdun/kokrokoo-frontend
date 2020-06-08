@@ -42,6 +42,7 @@
             <h6 class="collapse-header">Rate cards:</h6>
             <router-link class="collapse-item" to="/Media/RateCards">Create</router-link>
             <router-link class="collapse-item" to="/Media/ViewCards">View Cards</router-link>
+            <router-link class="collapse-item" to="/Media/CreateFromExisting">Create From Existing</router-link>
           </div>
         </div>
       </li>
@@ -100,7 +101,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseAdmin" aria-expanded="true" aria-controls="collapseAdmin">
           <i class="fas fa-fw fa-users"></i>
-          <span>Admins</span></a>
+          <span>Users</span></a>
           <div id="collapseAdmin" class="collapse" aria-labelledby="headingAdmin" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Users</h6>
