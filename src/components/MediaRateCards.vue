@@ -324,7 +324,7 @@
 <form v-if="media_type === 'TV' || media_type === 'Radio'" class="m-5 w-auto">
   <div class="form-row">
     <div class="form-group col-md-12">
-    <input type="text" class="form-control" v-model="title" placeholder="Enter Title">
+    <input type="text" class="form-control" v-model="title" placeholder="Enter Rate Card Title">
     <span class="text-danger">{{error1}}</span>
     </div>
   </div>
