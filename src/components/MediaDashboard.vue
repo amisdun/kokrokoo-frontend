@@ -7,8 +7,8 @@
 
       <!-- Sidebar - Brand -->
       <router-link class="sidebar-brand d-flex align-items-center justify-content-center" to="/media-dashboard">
-        <div class="sidebar-brand-icon rotate-n-15">
-         <img src="../../src/assets/image/kokro-yellow.png" class="img-fluid" alt="">
+        <div class="sidebar-brand-icon">
+         <img src="../../src/assets/image/kokro-yellow.png" class="img" alt="">
         </div>
       </router-link>
       <!-- Divider -->
@@ -34,7 +34,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-credit-card"></i>
-          <span>Create Rate Card</span>
+          <span>Rate Card</span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">

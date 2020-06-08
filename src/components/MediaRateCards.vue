@@ -7,8 +7,8 @@
 
       <!-- Sidebar - Brand -->
       <router-link class="sidebar-brand d-flex align-items-center justify-content-center" to="/media-dashboard">
-        <div class="sidebar-brand-icon rotate-n-15">
-         <img src="../../src/assets/image/kokro-yellow.png" class="img-fluid" alt="">
+        <div class="sidebar-brand-icon">
+         <img src="../../src/assets/image/kokro-yellow.png" class="img" alt="">
         </div>
       </router-link>
 
@@ -35,7 +35,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-credit-card"></i>
-          <span>Create Rate Card</span>
+          <span>Rate Card</span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
@@ -359,7 +359,7 @@
   </div>
   <div class="form-row">
     <div class="form-group col-md-12">
-    <input type="number" class="form-control" v-model="spots" placeholder="Enter Spot(s)">
+    <input type="number" class="form-control" v-model="spots" placeholder="Enter Available Spot(s)">
     <span class="text-danger">{{error5}}</span>
   </div>
   </div>
@@ -367,10 +367,6 @@
     <div class="form-group col-md-6">
     <input type="number" class="form-control" v-model="duration" placeholder="Enter duration">
     <span class="text-danger">{{error6}}</span>
-  </div>
-  <div class="form-group col-md-4">
-    <input type="text" class="form-control" v-model="rate" placeholder="Enter Rate">
-    <span class="text-danger">{{error7}}</span>
   </div>
   <div class="form-group col-md-2">
     <select class="form-control" v-model="unit">
@@ -380,6 +376,10 @@
   <option>Min</option>
 </select>
     <span class="text-danger">{{error8}}</span>
+  </div>
+  <div class="form-group col-md-4">
+    <input type="text" class="form-control" v-model="rate" placeholder="Enter Rate">
+    <span class="text-danger">{{error7}}</span>
   </div>
   </div>
   <div class="text-center">
@@ -394,7 +394,7 @@
   </div><br>
   <hr>
 <div class="row">
-  <div class="col-8" v-for="(tv_radio,key) of tv_radio_card_details" :key="key">
+  <div class="col-4 m-1" v-for="(tv_radio,key) of tv_radio_card_details" :key="key">
   <button type="submit" class="btn btn-info"><span> Day: {{tv_radio.day}}; </span><span> Time: {{tv_radio.time}}; </span><span> Slot: {{tv_radio.spot}}; </span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemoveTvRadio">X</a></button>
   </div>
 
@@ -683,7 +683,7 @@ import axios from 'axios'
             }
             if(added_tv_radio === false){
               this.tv_radio_card_details.push({
-                time: this.time_from + this.time_to,
+                time: this.time_from + " - " + this.time_to,
                 day: this.day,
                 spot: this.spots,
                 rate: this.rate,

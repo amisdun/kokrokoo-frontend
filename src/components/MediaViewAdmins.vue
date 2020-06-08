@@ -7,7 +7,7 @@
 
       <!-- Sidebar - Brand -->
       <router-link class="sidebar-brand d-flex align-items-center justify-content-center" to="/media-dashboard">
-        <div class="sidebar-brand-icon rotate-n-15">
+        <div class="sidebar-brand-icon">
          <img src="../../src/assets/image/kokro-yellow.png" class="img-fluid" alt="">
         </div>
       </router-link>
@@ -34,7 +34,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-credit-card"></i>
-          <span>Create Rate Card</span>
+          <span>Rate Card</span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
@@ -42,7 +42,6 @@
             <router-link class="collapse-item" to="/Media/RateCards">Create</router-link>
             <router-link class="collapse-item" to="/Media/ViewCards">View Cards</router-link>
             <router-link class="collapse-item" to="/Media/CreateFromExisting">Create From Existing</router-link>
-
           </div>
         </div>
       </li>
