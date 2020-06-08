@@ -3,16 +3,14 @@
 	<div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-info sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <router-link class="sidebar-brand d-flex align-items-center justify-content-center" to="/media-dashboard">
         <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
+         <img src="../../src/assets/image/kokro-yellow.png" class="img-fluid" alt="">
         </div>
-        <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
-      </a>
-
+      </router-link>
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
 
@@ -101,13 +99,13 @@
       <li class="nav-item">
         <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseAdmin" aria-expanded="true" aria-controls="collapseAdmin">
           <i class="fas fa-fw fa-users"></i>
-          <span>Admins</span></a>
+          <span>Users</span></a>
           <div id="collapseAdmin" class="collapse" aria-labelledby="headingAdmin" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Admins</h6>
-            <router-link class="collapse-item" to="/Media/ViewAdmins">View Admins</router-link>
-            <router-link class="collapse-item" to="/Media/CreateAdmins">Create new Admin</router-link>
-            <router-link class="collapse-item" to="/Media/AdminActivities">Admin Activities</router-link>
+            <h6 class="collapse-header">Users</h6>
+            <router-link class="collapse-item" to="/Media/ViewAdmins">View Users</router-link>
+            <router-link class="collapse-item" to="/Media/CreateAdmins">Create new User</router-link>
+            <router-link class="collapse-item" to="/Media/AdminActivities">User Activities</router-link>
           </div>
         </div>
       </li>
@@ -310,6 +308,47 @@
           </ul>
 
         </nav>
+        <div v-show="preloader">
+  <div class="animation animation-rotating-square"></div>
+</div>
+       <div class="alert alert-info m-5 text-center" v-show="show_admin" role="alert">
+            {{admin_error}}
+        </div>
+       <div class="card shadow m-5 w-75 text-center" :class="[admin_role === 'super_admin'? 'd-block':'d-none']">
+        <div class="alert" :class="[alert === 'success'? 'alert-success':'alert-danger']" v-show="show_alert" role="alert">
+            {{alert_message}}
+        </div>
+          <form class="m-5 w-auto text-center">
+  <div class="form-group">
+    <input type="text" class="form-control" v-model="name" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter name">
+    <span class="text-danger">{{error1}}</span>
+  </div>
+  <div class="form-group">
+    <input type="email" class="form-control" v-model="email" id="exampleInputPassword1" placeholder="Input email">
+    <span class="text-danger">{{error2}}</span>
+  </div>
+  <div class="form-group">
+    <input type="tel" class="form-control" v-model="phone_number1" id="exampleInputPassword1" placeholder="Phone number one">
+    <span class="text-danger">{{error3}}</span>
+  </div>
+  <div class="form-group">
+    <input type="tel" class="form-control" v-model="phone_number2" id="exampleInputPassword1" placeholder="Phone number two">
+    <span class="text-danger">{{error4}}</span>
+  </div>
+  <div class="form-group">
+    <input type="text" class="form-control" v-model="title" placeholder="Input title">
+    <span class="text-danger">{{error5}}</span>
+  </div>
+  <div class="form-group">
+    <input type="text" class="form-control" v-model="role" placeholder="Input role">
+    <span class="text-danger">{{error6}}</span>
+  </div>
+  <div class="spinner-grow text-success text-center" v-show="loading" role="status">
+  <span class="sr-only">Loading...</span>
+</div><br>
+  <button type="submit" class="btn btn-primary" @click.prevent="create_staff">Create Staff</button>
+</form>
+       </div>
     </div>
 </div>
 </div>
@@ -326,6 +365,8 @@
 </template>
 
 <script>
+import validator from 'validator'
+import axios from 'axios'
 	export default {
 		name: "MediaCreateAdmins",
 		data(){
@@ -333,8 +374,106 @@
 				error1: "",
 				error2: "",
 				error3: "",
+        error4: "",
+        error5: "",
+        error6: "",
+        name: "",
+        email: "",
+        phone_number1: "",
+        phone_number2: "",
+        title: "",
+        role: "",
+        alert: "",
+        alert_message: "",
+        show_alert: false,
+        loading: false,
+        token: "",
+        admin_role: "",
+        preloader: true,
+        show_admin: false,
+        admin_error: ""
 			}
 		},
+    methods: {
+      create_staff(){
+        if(validator.isEmpty(this.name)) this.error1 = "Name is requuired";
+        else this.error1 = "";
+        if(validator.isEmpty(this.email)) this.error2 = "Email is required";
+        else{
+          if(!validator.isEmail(this.email)) this.error2 = "Invalid email format";
+          else this.error2 = ""
+        }
+        if(validator.isEmpty(this.phone_number1)) this.error3 = "first telephone number";
+        else{
+          if(!validator.isMobilePhone(this.phone_number1,'en-GH')) this.error3 = "Invalid phone Number";
+          else this.error3 = ""
+        }
+        if(!validator.isEmpty(this.phone_number2)){
+          if(!validator.isMobilePhone(this.phone_number2,'en-GH')) this.error4 = "Invalid phone Number";
+          else this.error4 = ""
+        }
+        if(validator.isEmpty(this.title)) this.error5 = "Title required";
+        else this.error5 = "";
+        if(validator.isEmpty(this.role)) this.error6 = "Role required";
+        else this.error6 = "";
+
+        if(
+          !validator.isEmpty(this.name) &&
+          !validator.isEmpty(this.email) &&
+          validator.isEmail(this.email) &&
+          validator.isMobilePhone(this.phone_number1,'en-GH') &&
+          !validator.isEmpty(this.phone_number1) &&
+
+          !validator.isEmpty(this.title) &&
+          !validator.isEmpty(this.role)
+          ){
+          this.loading = true
+        let self = this
+        setTimeout(function(){
+          self.create_admin_api(self.name,self.email,self.phone_number1,self.phone_number2,self.title,self.role)
+        })
+        }
+      },
+      async create_admin_api(name,email,phone_number1,phone_number2,title,role){
+        try {
+          this.show_alert = false
+          // statements
+          let data = {
+            name: name,
+            email: email,
+            phone1: phone_number1,
+            phone2: phone_number2,
+            title: title,
+            role: role
+          }
+          let new_admin = await axios({
+            url: "https://media-kokrokooad.herokuapp.com/api/super-admin/add-new/staff",
+            method: "POST",
+            data: data,
+            headers: {
+              'Authorization': 'Bearer ' + this.token
+            }
+          })
+
+          if(new_admin.status === 200){
+            this.loading = false
+            this.alert = "success"
+            this.alert_message = "New Staff Created"
+            this.show_alert = true
+          }
+        } catch(e) {
+          // statements
+          console.log(e);
+          console.log(e.response)
+          if(e.response.status === 422){
+            this.loading = false
+            this.alert = "error"
+            this.alert_message = e.response.data.message
+            this.show_alert = true
+          }
+        }
+      }
+    },
 		mounted(){
 
 		},
@@ -342,7 +481,35 @@
       if(!this.$session.exists()){
         this.$router.push({path: '/'})
       }
-	}
+	},
+  async created(){
+    let token = this.$session.get('media-jwt')
+    this.token = token
+
+    try {
+      // statements
+      let user = await axios({
+        url: "https://media-kokrokooad.herokuapp.com/api/user",
+        method: "GET",
+        headers: {
+          'Authorization': 'Bearer ' + this.token
+        }
+      })
+
+      if(user.status === 200){
+        this.admin_role = user.data.user.role
+        if(this.admin_role !== "super_admin"){
+          this.preloader = false
+          this.admin_error = "Unauthorized user access"
+          this.show_admin = true
+        }
+        this.preloader = false
+      }
+    } catch(e) {
+      // statements
+      console.log(e);
+    }
+  }
 }
 
 </script>

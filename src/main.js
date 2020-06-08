@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import 'jquery/dist/jquery.min.js'
 import './assets/css/sb-admin-2.min.css'
+import 'preloader-js/assets/css/preloader.css'
 // import './assets/vendor/jquery-easing/jquery.easing.min.js'
 // import './assets/js/sb-admin-2.min.js'
 import './assets/vendor/fontawesome-free/css/all.min.css'
@@ -25,6 +26,7 @@ import MediaRateCards from './components/MediaRateCards.vue'
 import MediaViewCards from './components/MediaViewCards.vue'
 import MediaSubscriptions from './components/MediaSubscriptions.vue'
 import MediaTransactions from './components/MediaTransactions.vue'
+import MediaCreateFromExisting from "./components/MediaCreateFromExisting.vue"
 
 Vue.use(VModal)
 Vue.use(LoadScript)
@@ -44,7 +46,8 @@ const router = new VueRouter({
 		{path: '/Media/RateCards', name: 'MediaRateCards', component: MediaRateCards},
 		{path: '/Media/ViewCards', name: 'MediaViewCards', component: MediaViewCards},
 		{path: '/Media/Subscriptions', name: 'MediaSubscriptions', component: MediaSubscriptions},
-		{path: '/Media/Transactions', name: 'MediaTransactions', component: MediaTransactions}
+		{path: '/Media/Transactions', name: 'MediaTransactions', component: MediaTransactions},
+		{path: '/Media/CreateFromExisting', name: 'MediaCreateFromExisting', component: MediaCreateFromExisting}
 	],
 	mode: 'history'
 })

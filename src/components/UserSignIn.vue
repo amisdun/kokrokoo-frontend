@@ -1,13 +1,16 @@
 <template>
     <div>
-    <div class="container shadow-lg">
-    <div class="card card-login mx-auto mt-5">
+      <div v-show="preloader">
+  <div class="animation animation-rotating-square"></div>
+</div>
+    <div class="container shadow-lg w-100">
+    <div class="card card-login border-0 m-5">
       <div class="alert text-center" :class="[server_res == 'success'? 'alery-success':'alert-danger']" v-show="res_show" role="alert">
           {{message}}
       </div>
-      <div class="card-header text-center">Media Login</div>
-      <div class="card-body">
-        <form>
+      <div class="card-header bg-info text-center m-2"><strong class="text-white">Media Login</strong></div>
+      <div class="card-body m-3">
+        <form class="text-center w-100">
           <div class="form-group">
             <div class="form-label-group">
               <input type="email" id="inputEmail" class="form-control" v-model="email"
@@ -29,10 +32,12 @@
               </label>
             </div>
           </div>
-          <a class="btn btn-info btn-block" id="login" @click.prevent="Login" href="#">Login</a>
+          <div class="text-center">
+            <a class="btn btn-info w-25" id="login" @click.prevent="Login" href="#">Login</a>
+          </div>
         </form>
         <div class="text-center">
-          <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
+          <a class="d-block small" href="#">Forgot Password?</a>
         </div>
         <div class="text-center">
           <span id="err" class="d-block text-danger"></span>
@@ -64,7 +69,8 @@ export default {
       loading: false,
       server_res: "",
       message: "",
-      res_show: false
+      res_show: false,
+      preloader: true
     }
   },
   methods: {
@@ -121,7 +127,7 @@ export default {
     }
   },
   created(){
-
+    this.preloader = false
   },
   mounted(){
 
@@ -131,7 +137,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .container{
-  width: 70vw
-  }
+
 </style>

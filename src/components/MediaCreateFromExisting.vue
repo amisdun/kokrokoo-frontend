@@ -100,7 +100,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseAdmin" aria-expanded="true" aria-controls="collapseAdmin">
           <i class="fas fa-fw fa-users"></i>
-          <span>Users</span></a>
+          <span>Admins</span></a>
           <div id="collapseAdmin" class="collapse" aria-labelledby="headingAdmin" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Users</h6>
@@ -309,6 +309,31 @@
           </ul>
 
         </nav>
+        <div v-show="preloader">
+  <div class="animation animation-rotating-square"></div>
+</div>
+        <div class="alert m-5 text-center" v-show="show_alert" :class="[res_error === 'success'? 'alert-success': 'alert-danger']" role="alert">
+            {{res_message}}
+        </div>
+        <div class="card shadow-lg m-5">
+          <form class="m-5">
+  <div class="form-group">
+    <select class="form-control" id="exampleFormControlSelect1" v-model="selected_title">
+      <option value="" selected disabled>Select An Existing Card</option>
+      <option v-for="(title,key) of titles" :key="key" :value="title.id">{{title.title}}</option>{{selected_title}}
+    </select>
+    <span class="text-danger">{{error1}}</span>
+  </div>
+  <div class="form-group">
+    <input type="text" class="form-control" v-model="new_title" id="exampleFormControlInput1" placeholder="Provide new Card Title">
+    <span class="text-danger">{{error2}}</span>
+  </div>
+  <div class="spinner-grow text-success text-center" v-show="loading" role="status">
+  <span class="sr-only">Loading...</span>
+</div><br>
+  <button type="submit" class="btn btn-primary" @click.prevent="create_from_existing">Submit</button>
+</form>
+        </div>
     </div>
 </div>
 </div>
@@ -325,15 +350,66 @@
 </template>
 
 <script>
+import axios from "axios"
+import validator from "validator"
 	export default {
-		name: "MediaTransactions",
+		name: "MediaCreateFromExisting",
 		data(){
 			return {
 				error1: "",
 				error2: "",
-				error3: "",
+        token: "",
+        titles: [],
+        selected_title: "",
+        new_title: "",
+        show_alert: false,
+        loading: false,
+        res_error: "",
+        res_message: "",
+        preloader: true
 			}
 		},
+    methods: {
+      create_from_existing(){
+        this.show_alert = false
+        if(!this.selected_title) this.error1 = "Please Select An Existing Title";
+        else this.error1 = "";
+        if(validator.isEmpty(this.new_title)) this.error2 = "Please Provide A nNew Title Name";
+        else this.error2 = ""
+
+        if(
+           this.selected_title.length !== 0 &&
+          !validator.isEmpty(this.new_title)
+          ){
+          this.loading = true
+        let self = this
+          setTimeout(function(){
+            self.create_existing(self.new_title)
+          })
+        }
+      },
+      async create_existing(new_title){
+        let data = {
+          title: new_title
+        }
+
+        let created = await axios({
+          url: 'https://media-kokrokooad.herokuapp.com/api/ratecard/'+ this.selected_title +'/create-from-existing',
+          method: "POST",
+          data: data,
+          headers: {
+            'Authorization': 'Bearer ' + this.token
+          }
+        })
+
+        if(created.status === 200){
+          this.loading = false
+          this.res_error = 'success'
+          this.res_message = "Created succesfully"
+          this.show_alert = true
+        }
+      }
+    },
 		mounted(){
 
 		},
@@ -341,7 +417,32 @@
       if(!this.$session.exists()){
         this.$router.push({path: '/'})
       }
-	}
+	},
+  async created(){
+    let token = this.$session.get('media-jwt')
+    this.token = token
+
+    try {
+      // statements
+      let all_cards_title = await axios({
+        url: 'https://media-kokrokooad.herokuapp.com/api/ratecard/get-existing-titles',
+        method: "GET",
+        headers: {
+          'Authorization': 'Bearer ' + this.token
+        }
+      })
+
+      if(all_cards_title.status === 200){
+        console.log(all_cards_title)
+        this.titles = all_cards_title.data.existing_titles
+        console.log(this.titles)
+        this.preloader = false
+      }
+    } catch(e) {
+      // statements
+      console.log(e);
+    }
+  }
 }
 
 </script>

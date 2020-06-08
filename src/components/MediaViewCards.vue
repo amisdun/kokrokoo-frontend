@@ -3,15 +3,14 @@
 	<div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-info sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <router-link class="sidebar-brand d-flex align-items-center justify-content-center" to="/media-dashboard">
         <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
+         <img src="../../src/assets/image/kokro-yellow.png" class="img-fluid" alt="">
         </div>
-        <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
-      </a>
+      </router-link>
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
@@ -101,13 +100,13 @@
       <li class="nav-item">
         <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseAdmin" aria-expanded="true" aria-controls="collapseAdmin">
           <i class="fas fa-fw fa-users"></i>
-          <span>Admins</span></a>
+          <span>Users</span></a>
           <div id="collapseAdmin" class="collapse" aria-labelledby="headingAdmin" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Admins</h6>
-            <router-link class="collapse-item" to="/Media/ViewAdmins">View Admins</router-link>
-            <router-link class="collapse-item" to="/Media/CreateAdmins">Create new Admin</router-link>
-            <router-link class="collapse-item" to="/Media/AdminActivities">Admin Activities</router-link>
+            <h6 class="collapse-header">Users</h6>
+            <router-link class="collapse-item" to="/Media/ViewAdmins">View Users</router-link>
+            <router-link class="collapse-item" to="/Media/CreateAdmins">Create new User</router-link>
+            <router-link class="collapse-item" to="/Media/AdminActivities">Users Activities</router-link>
           </div>
         </div>
       </li>
@@ -310,12 +309,17 @@
           </ul>
 
         </nav>
-        <table class="table ml-1 mr-5 shadow-lg" v-if="media_type === 'TV' || media_type === 'Radio'">
+        <div v-show="preloader">
+  <div class="animation animation-rotating-square"></div>
+</div>
+        <div class="m-5 shadow-lg" v-if="media_type === 'TV' || media_type === 'Radio'">
+          <table class="table">
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
       <th scope="col">Card titile</th>
       <th scope="col">Actions</th>
+      <th scope="col">Card Status</th>
     </tr>
   </thead>
   <tbody>
@@ -323,20 +327,24 @@
       <th scope="row">{{key + 1}}</th>
       <td>{{tv_radio_card.title}}</td>
       <td :id="key">
-        <button class="btn btn-primary" @click.prevent="view_tv_radio_cards">View</button>
-        <button class="btn btn-secondary" :value="tv_radio_card.id" @click.prevent="edit_tv_radio_card">Edit</button>
-        <button class="btn btn-danger" :id="tv_radio.id" @click.prevent="delete_tv_radio_card">delete</button>
+        <button class="btn btn-secondary mr-2" :value="tv_radio_card.id" @click.prevent="edit_tv_radio_card">View</button>
+        <button class="btn btn-danger" :id="tv_radio_card.id" @click.prevent="delete_tv_radio_card">delete</button>
+      </td>
+      <td>
+        <button class="btn btn-danger" @click.prevent="activate_tv_radio_card">Not activated</button>
       </td>
     </tr>
   </tbody>
 </table>
-
-<table class="table ml-1 mr-5 shadow-lg" v-else-if="media_type === 'print'">
+        </div>
+  <div class="shadow-lg m-5" v-else-if="media_type === 'print'">
+    <table class="table">
   <thead class="thead-dark">
     <tr>
       <th scope="col">#</th>
       <th scope="col">Card titile</th>
       <th scope="col">Actions</th>
+      <th scope="col">Card Status</th>
     </tr>
   </thead>
   <tbody>
@@ -344,13 +352,16 @@
       <th scope="row">{{key + 1}}</th>
       <td>{{print_card.title}}</td>
       <td :id="key">
-        <button class="btn btn-primary" @click.prevent="view_print_cards">View</button>
-        <button class="btn btn-secondary" @click.prevent="edit_print_card">Edit</button>
+        <button class="btn btn-secondary mr-2" :value="print_card.id" @click.prevent="edit_print_card">View</button>
         <button class="btn btn-danger" :id="print_card.id" @click.prevent="delete_print_card">delete</button>
+      </td>
+      <td>
+        <button class="btn btn-danger" @click.prevent="activate_print_card">Not activated</button>
       </td>
     </tr>
   </tbody>
 </table>
+  </div>
     </div>
 </div>
 </div>
@@ -569,15 +580,29 @@ import axios from "axios"
         res_alert: false,
         alert_message: "",
         alert: "",
-        loading: false
+        loading: false,
+        preloader: true
 			}
 		},
     methods: {
-      delete_print_card(e){
+     async delete_print_card(e){
         let key = e.currentTarget.parentElement.id
         let delete_id = e.currentTarget.id
         console.log(delete_id)
-        this.print_cards.splice(key,1)
+        this.all_print_cards.splice(key,1)
+        try {
+          // statements
+          await axios({
+            url: "https://media-kokrokooad.herokuapp.com/api/ratecard/"+ delete_id +"/delete",
+            method: "DELETE",
+            headers: {
+              'Authorization': 'Bearer ' + this.token
+            }
+          })
+        } catch(e) {
+          // statements
+          console.log(e);
+        }
       },
       view_print_cards(){
 
@@ -596,11 +621,26 @@ import axios from "axios"
         let key = e.currentTarget.id
         this.tv_cards.splice(key,1)
       },
-      delete_tv_radio_card(e){
+     async delete_tv_radio_card(e){
         let id = e.currentTarget.parentElement.id
         let delete_id = e.currentTarget.id
         console.log(delete_id)
         this.all_tv_radio_cards.splice(id,1)
+        try {
+          // statements
+          await axios({
+            url: "https://media-kokrokooad.herokuapp.com/api/ratecard/"+ delete_id +"/delete",
+            method: "DELETE",
+            headers: {
+              'Authorization': 'Bearer ' + this.token
+            }
+          })
+
+
+        } catch(e) {
+          // statements
+          console.log(e);
+        }
       },
       edit_tv_radio_card(e){
         this.$modal.show('tv_radio_modal')
@@ -713,7 +753,6 @@ import axios from "axios"
  async created(){
         let token = this.$session.get('media-jwt')
         this.token = token
-
         try {
       // statement
       let user_details = await axios({
@@ -726,7 +765,7 @@ import axios from "axios"
 
       if(user_details.status === 200){
         this.media_type = user_details.data.company.media_type
-        console.log(user_details)
+
       }
     } catch(e) {
       // statements
@@ -745,10 +784,11 @@ import axios from "axios"
         console.log(this.media_type)
         if(this.media_type === "TV" || this.media_type === "Radio"){
           this.all_tv_radio_cards = fetch_all_cards.data
-          console.log(this.all_tv_radio_cards)
+          this.preloader = false
         }
         if(this.media_type === "print"){
           this.all_print_cards = fetch_all_cards.data
+          this.preloader = false
         }
       } catch(e) {
         // statements

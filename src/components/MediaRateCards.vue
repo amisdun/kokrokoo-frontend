@@ -3,15 +3,14 @@
 	<div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-info sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <router-link class="sidebar-brand d-flex align-items-center justify-content-center" to="/media-dashboard">
         <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
+         <img src="../../src/assets/image/kokro-yellow.png" class="img-fluid" alt="">
         </div>
-        <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
-      </a>
+      </router-link>
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
@@ -101,13 +100,13 @@
       <li class="nav-item">
         <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseAdmin" aria-expanded="true" aria-controls="collapseAdmin">
           <i class="fas fa-fw fa-users"></i>
-          <span>Admins</span></a>
+          <span>Users</span></a>
           <div id="collapseAdmin" class="collapse" aria-labelledby="headingAdmin" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Admins</h6>
-            <router-link class="collapse-item" to="/Media/ViewAdmins">View Admins</router-link>
-            <router-link class="collapse-item" to="/Media/CreateAdmins">Create new Admin</router-link>
-            <router-link class="collapse-item" to="/Media/AdminActivities">Admin Activities</router-link>
+            <h6 class="collapse-header">Users</h6>
+            <router-link class="collapse-item" to="/Media/ViewAdmins">View Users</router-link>
+            <router-link class="collapse-item" to="/Media/CreateAdmins">Create new User</router-link>
+            <router-link class="collapse-item" to="/Media/AdminActivities">Users Activities</router-link>
           </div>
         </div>
       </li>
@@ -310,49 +309,77 @@
           </ul>
 
         </nav>
+        <div v-show="preloader">
+  <div class="animation animation-rotating-square"></div>
+</div>
+
         <div class="text-center" v-show="res_alert">
     <span class="alert" :class="[alert === 'success'? 'alert-success':' alert-danger']">{{alert_message}}</span>
   </div>
-        <div class="card m-3 shadow">
+        <div class="card m-5 w-75 shadow">
   <h5 class="card-header">Provide Rate Card Details</h5>
-  <div class="card-body">
+  <div class="card-body w-auto">
     <h5 class="card-title">All fields are required</h5>
-<form v-if="media_type === 'TV' || media_type === 'Radio'">
-  <div class="form-group">
+<form v-if="media_type === 'TV' || media_type === 'Radio'" class="m-5 w-auto">
+  <div class="form-row">
+    <div class="form-group col-md-12">
     <input type="text" class="form-control" v-model="title" placeholder="Enter Title">
     <span class="text-danger">{{error1}}</span>
     </div>
+  </div>
     <hr>
     <div class="text-center m-2"><h2>Card Details</h2></div>
-  <div class="form-group">
-    <input type="text" class="form-control" v-model="time" placeholder="Enter Time frame">
+    <div class="form-row">
+      <div class="form-group col-md-12">
+    <select class="form-control" v-model="day">
+  <option value="">Select Day</option>
+  <option>Monday</option>
+  <option>Tuesday</option>
+  <option>Wednesday</option>
+  <option>Thursday</option>
+  <option>Friday</option>
+  <option>Saturday</option>
+  <option>Sunday</option>
+</select>
     <span class="text-danger">{{error2}}</span>
   </div>
-  <div class="form-group">
-    <input type="number" class="form-control" v-model="slots" placeholder="Enter Slot(s)">
+    </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputfrom">From</label>
+    <input type="time" class="form-control" id="inputfrom" v-model="time_from" placeholder="from">
     <span class="text-danger">{{error3}}</span>
   </div>
-  <div class="form-group">
-    <input type="text" class="form-control" v-model="day" placeholder="Enter day">
+  <div class="form-group col-md-6">
+    <label for="inputto">to</label>
+    <input type="time" class="form-control" id="inputto" v-model="time_to" placeholder="to">
     <span class="text-danger">{{error4}}</span>
   </div>
-<div class="form-group">
-    <input type="number" class="form-control" v-model="rate_15" placeholder="Enter Rate(GHS) in 15sec">
   </div>
-  <div class="form-group">
-    <input type="number" class="form-control" v-model="rate_20" placeholder="Enter Rate(GHS) in 20sec">
+  <div class="form-row">
+    <div class="form-group col-md-12">
+    <input type="number" class="form-control" v-model="spots" placeholder="Enter Spot(s)">
+    <span class="text-danger">{{error5}}</span>
   </div>
-  <div class="form-group">
-    <input type="number" class="form-control" v-model="rate_30" placeholder="Enter Rate(GHS) in 30sec">
   </div>
-  <div class="form-group">
-    <input type="number" class="form-control" v-model="rate_45" placeholder="Enter Rate(GHS) in 45sec">
+  <div class="form-row">
+    <div class="form-group col-md-6">
+    <input type="text" class="form-control" v-model="duration" placeholder="Enter duration">
+    <span class="text-danger">{{error6}}</span>
   </div>
-  <div class="form-group">
-    <input type="number" class="form-control" v-model="rate_50" placeholder="Enter Rate(GHS) in 50sec">
+  <div class="form-group col-md-4">
+    <input type="text" class="form-control" v-model="rate" placeholder="Enter Rate">
+    <span class="text-danger">{{error7}}</span>
   </div>
-  <div class="form-group">
-    <input type="number" class="form-control" v-model="rate_60" placeholder="Enter Rate(GHS) in 60sec">
+  <div class="form-group col-md-2">
+    <select class="form-control" v-model="unit">
+      <option value="">Unit</option>
+  <option>Sec</option>
+  <option>Hr</option>
+  <option>Min</option>
+</select>
+    <span class="text-danger">{{error8}}</span>
+  </div>
   </div>
   <div class="text-center">
           <span class="text-success" v-show="loading">
@@ -362,7 +389,7 @@
   <button type="submit" class="btn btn-primary" @click.prevent="CreateTvRadioCrad">Create Rate Card</button>
   <button type="submit" class="btn btn-primary float-right" @click.prevent="AddTvRadioCardDetails">+</button>
   <div class="text-center">
-    <span class="text-danger">{{error6}}</span>
+    <span class="text-danger">{{error9}}</span>
   </div>
   <hr>
 <div class="row">
@@ -441,6 +468,9 @@ import axios from 'axios'
         error4: "",
         error5: "",
         error6: "",
+        error7: "",
+        error8: "",
+        error9: "",
         media_type: "",
         Rate: "",
         card_details: "",
@@ -455,13 +485,9 @@ import axios from 'axios'
         alert: "",
         res_alert: false,
         token: "",
+        unit: "",
         alert_message: "",
-        rate_15: "",
-        rate_20: "",
-        rate_30: "",
-        rate_45: "",
-        rate_50: "",
-        rate_60: ""
+        preloader: true
 			}
 		},
     methods: {
@@ -541,6 +567,7 @@ import axios from 'axios'
                 this.alert = "success"
                 this.alert_message = "You have created a New Rate Card"
                 this.res_alert = true
+                this.$forceUpdate()
               }
             } catch(e) {
               // statements
@@ -575,6 +602,7 @@ import axios from 'axios'
                 this.alert = "success"
                 this.alert_message = "You have created a New Rate Card"
                 this.res_alert = true
+                this.$forceUpdate()
               }
             } catch(e) {
               // statements
@@ -690,7 +718,7 @@ import axios from 'axios'
 
       if(user_details.status === 200){
         this.media_type = user_details.data.company.media_type
-        console.log(user_details)
+        this.preloader = false
       }
     } catch(e) {
       // statements

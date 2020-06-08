@@ -3,16 +3,14 @@
 	<div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-info sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <router-link class="sidebar-brand d-flex align-items-center justify-content-center" to="/media-dashboard">
         <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
+         <img src="../../src/assets/image/kokro-yellow.png" class="img-fluid" alt="">
         </div>
-        <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
-      </a>
-
+      </router-link>
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
 
@@ -101,13 +99,13 @@
       <li class="nav-item">
         <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseAdmin" aria-expanded="true" aria-controls="collapseAdmin">
           <i class="fas fa-fw fa-users"></i>
-          <span>Admins</span></a>
+          <span>Users</span></a>
           <div id="collapseAdmin" class="collapse" aria-labelledby="headingAdmin" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Admins</h6>
-            <router-link class="collapse-item" to="/Media/ViewAdmins">View Admins</router-link>
-            <router-link class="collapse-item" to="/Media/CreateAdmins">Create new Admin</router-link>
-            <router-link class="collapse-item" to="/Media/AdminActivities">Admin Activities</router-link>
+            <h6 class="collapse-header">Users</h6>
+            <router-link class="collapse-item" to="/Media/ViewAdmins">View Users</router-link>
+            <router-link class="collapse-item" to="/Media/CreateAdmins">Create new User</router-link>
+            <router-link class="collapse-item" to="/Media/AdminActivities">User Activities</router-link>
           </div>
         </div>
       </li>

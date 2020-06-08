@@ -3,16 +3,14 @@
 	<div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-info sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-gradient-dark sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <router-link class="sidebar-brand d-flex align-items-center justify-content-center" to="/media-dashboard">
         <div class="sidebar-brand-icon rotate-n-15">
-          <i class="fas fa-laugh-wink"></i>
+         <img src="../../src/assets/image/kokro-yellow.png" class="img-fluid" alt="">
         </div>
-        <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
-      </a>
-
+      </router-link>
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
 
@@ -43,6 +41,7 @@
             <h6 class="collapse-header">Rate cards:</h6>
             <router-link class="collapse-item" to="/Media/RateCards">Create</router-link>
             <router-link class="collapse-item" to="/Media/ViewCards">View Cards</router-link>
+            <router-link class="collapse-item" to="/Media/CreateFromExisting">Create From Existing</router-link>
           </div>
         </div>
       </li>
@@ -101,13 +100,13 @@
       <li class="nav-item">
         <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseAdmin" aria-expanded="true" aria-controls="collapseAdmin">
           <i class="fas fa-fw fa-users"></i>
-          <span>Admins</span></a>
+          <span>Users</span></a>
           <div id="collapseAdmin" class="collapse" aria-labelledby="headingAdmin" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Admins</h6>
-            <router-link class="collapse-item" to="/Media/ViewAdmins">View Admins</router-link>
-            <router-link class="collapse-item" to="/Media/CreateAdmins">Create new Admin</router-link>
-            <router-link class="collapse-item" to="/Media/AdminActivities">Admin Activities</router-link>
+            <h6 class="collapse-header">Users</h6>
+            <router-link class="collapse-item" to="/Media/ViewAdmins">View Users</router-link>
+            <router-link class="collapse-item" to="/Media/CreateAdmins">Create new User</router-link>
+            <router-link class="collapse-item" to="/Media/AdminActivities">Users Activities</router-link>
           </div>
         </div>
       </li>
@@ -311,6 +310,11 @@
 
         </nav>
         <div class="container-fluid">
+<nav aria-label="breadcrumb" v-show="show_published">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active btn" @click.prevent="publish_company" :class="[published === true? 'btn-success': 'btn-warning']" aria-current="page">{{publish_msg}}</li>
+  </ol>
+</nav>
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Subscriptions</h1>
           </div>
@@ -499,6 +503,7 @@
 </template>
 
 <script>
+import axios from "axios"
 	export default {
 		name: "MediaDashboard",
 		data(){
@@ -506,14 +511,98 @@
 				error1: "",
 				error2: "",
 				error3: "",
+        token: "",
+        show_published: false,
+        published: Boolean,
+        publish_msg: "",
+        company_id: ""
 			}
 		},
+    methods: {
+      async publish_company(){
+        if(this.published === false){
+          this.publish_msg = "pending"
+          try {
+          // statements
+          let publish = await axios({
+            url: "https://media-kokrokooad.herokuapp.com/api/super-admin/publish-company",
+            method: "POST",
+            headers: {
+              'Authorization': 'Bearer ' + this.token
+            }
+          })
+
+          if(publish.status === 200){
+            this.published = true
+            this.publish_msg = "unPublish"
+          }
+        } catch(e) {
+          // statements
+          console.log(e);
+        }
+        }
+        else{
+          this.publish_msg = "pending"
+          try {
+          // statements
+          let publish = await axios({
+            url: "https://media-kokrokooad.herokuapp.com/api/super-admin/unpublish-company",
+            method: "POST",
+            headers: {
+              'Authorization': 'Bearer ' + this.token
+            }
+          })
+
+          if(publish.status === 200){
+            this.published = false
+            this.publish_msg = "Publish"
+          }
+        } catch(e) {
+          // statements
+          console.log(e);
+        }
+        }
+      }
+    },
 		mounted(){
 
 		},
     beforeCreate(){
       if(!this.$session.exists()){
         this.$router.push({path: '/'})
+      }
+    },
+    async created(){
+      let token = this.$session.get('media-jwt')
+      this.token = token
+
+      try {
+        // statements
+        let super_admin = await axios({
+          url: "https://media-kokrokooad.herokuapp.com/api/user",
+          method: "GET",
+          headers: {
+            'Authorization': 'Bearer ' + this.token
+          }
+        })
+
+        if(super_admin.data.user.role === "super_admin"){
+          console.log(super_admin.data.company.isPublished)
+          console.log(super_admin)
+          if(super_admin.data.company.isPublished === true){
+            this.publish_msg = "unPublish"
+            this.published = true
+            this.show_published = true
+          }
+          if(super_admin.data.company.isPublished === false){
+            this.publish_msg = "Publish"
+            this.published = false
+            this.show_published = true
+          }
+        }
+      } catch(e) {
+        // statements
+        console.log(e);
       }
     }
 	}
