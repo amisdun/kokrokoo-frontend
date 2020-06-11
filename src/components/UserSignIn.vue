@@ -100,8 +100,8 @@ export default {
             dataType: "JSON",
             data: {
               grant_type : "password",
-              client_id : 2,
-              client_secret: "jozMIt47sxg4bPg14ARQDvz4gPjD0gkq8QpztSeg",
+              client_id : 1,
+              client_secret: "r5TIDYCx6ORR6JIMqow0vU64GzbcJM724OLFCFrf",
               username: email,
               password: password,
               provider: "users"

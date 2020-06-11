@@ -23,6 +23,7 @@
     "vue-js-modal": "^2.0.0-rc.3",
     "vue-router": "^3.3.0",
     "vue-session": "^1.0.0",
+    "vuejs-popup": "^1.0.2",
     "vuetify": "^2.2.30"
   },
   "devDependencies": {

@@ -313,7 +313,73 @@
         <div v-show="preloader">
   <div class="animation animation-rotating-square"></div>
 </div>
-        <div class="m-5 shadow-lg" v-if="media_type === 'TV' || media_type === 'Radio'">
+<div class="container" v-show="show_tv_rate_details">
+  <div class="text-center m-5" v-show="res_alert">
+    <span class="alert" :class="[alert === 'success'? 'alert-success':' alert-danger']">{{alert_message}}</span>
+  </div>
+      <form>
+        <div class="m-5 text-center">
+          <span class="alert alert-warning">Please Make Sure U <em>CLICK SAVE CHANGES</em> after any action</span>
+        </div>
+        <div class="row form-group w-auto">
+                <div class="col-md-12">
+                  <input type="text" class="form-control" name="" v-model="tv_title" placeholder="Rate Card Title">
+                </div>
+              </div>
+      </form>
+        <div style="height: 700px; overflow-y: auto" class="card shadow">
+          <div class="row ml-4"  v-for="(tv_card,key) of tv_cards" :key="key">
+          <div class="col-lg-11 col-md-11 col-sm-10 col-xs-8 card m-2 shadow">
+            <span class="m-2 text-info">Rate Card {{key + 1}}</span>
+            <form>
+                <div class="row m-2">
+                  <div class="col-md-4 form-group">
+                    <select class="form-control" v-model="tv_card.day">
+                      <option value="" selected disabled>Day</option>
+                      <option>Monday</option>
+                      <option>Tuesday</option>
+                      <option>Wednesday</option>
+                      <option>Thursday</option>
+                      <option>Friday</option>
+                      <option>Saturday</option>
+                      <option>Sunday</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4 form-group">
+                    <input type="text" v-model="tv_card.time" class="form-control" name="" placeholder="Time Frame">
+                  </div>
+                  <div class="col-md-4 form-group">
+                    <input type="text" v-model="tv_card.spot" class="form-control" name="" placeholder="spot">
+                  </div>
+                </div>
+                <div class="row form-group m-1" v-for="(rate_detail,key) of tv_card.rate_details" :key="key">
+                  <div class="col-md-4">
+                    <input type="number" v-model="rate_detail.duration" class="form-control" name="" placeholder="Duration">
+                  </div>
+                  <div class="col-md-3">
+                    <select class="form-control" v-model="rate_detail.unit">
+                      <option value="">Unit</option>
+                      <option>Sec</option>
+                      <option>Hr</option>
+                      <option>Min</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <input type="number" v-model="rate_detail.rate" class="form-control" name="" placeholder="Rate">
+                  </div>
+                  <div class="col-md-1">
+                    <button class="btn btn-danger" :value="key" @click.prevent="tv_card.rate_details.splice(key,1)">X</button>
+                  </div>
+                </div>
+                <button class="btn btn-primary float-left m-2" :value="key" @click.prevent="Add_tv_rate">Add Rate</button>
+            </form>
+          </div>
+        </div>
+        </div>
+        <button class="btn btn-success m-2" @click.prevent="save_tv_changes">Save Changes</button>
+        <button class="btn btn-secondary float-right m-2" @click.prevent="show_tv_rate_details = false;show_tv_cards = true">Close</button>
+    </div>
+        <div class="m-5 shadow-lg" v-if="media_type === 'TV' || media_type === 'Radio'" v-show="show_tv_cards">
           <table class="table">
   <thead class="thead-dark">
     <tr>
@@ -442,82 +508,6 @@
     </transition>
   </div>
 
-    <modal name="tv_radio_modal"
-        width='95%'
-        height='auto'
-    >
-    <div class="text-center mt-2" v-show="res_alert">
-    <span class="alert" :class="[alert === 'success'? 'alert-success':' alert-danger']">{{alert_message}}</span>
-  </div>
-      <form class="m-5">
-                    <div class="form-group text">
-                      <input type="text" class="form-control w-50" v-model="tv_title" placeholder="title" id="exampleInputPassword1" >
-                    </div><hr>
-                    <div class="text-center"><h2>Cards</h2></div>
-                    <table class="table ml-1 mr-5 table-responsive">
-                      <thead class="thead-dark">
-                        <tr>
-                          <th scope="col">day</th>
-                          <th scope="col">time_frame</th>
-                          <th scope="col">slots</th>
-                          <th scope="col">duration</th>
-                          <th scope="col">Rate</th>
-                          <th scope="col">unit</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(card,key) of tv_cards" :key="key">
-                          <td ><div class="form-group">
-                      <select class="form-control" v-model="card.day">
-                        <option value="">Select day</option>
-                        <option>Monday</option>
-                        <option>Tuesday</option>
-                        <option>Wednesday</option>
-                        <option>Thursday</option>
-                        <option>Friday</option>
-                        <option>Saturday</option>
-                        <option>Sunday</option>
-                      </select>
-                    </div></td>
-                          <td><div class="form-group">
-                      <input type="text" class="form-control display-4" v-model="card.time">
-                    </div></td>
-                    <td><div class="form-group">
-                      <input type="text" class="form-control" v-model="card.spot">
-                    </div></td>
-                    <td><div class="form-group">
-                      <input type="text" class="form-control" v-model="card.duration">
-                    </div></td>
-                    <td><div class="form-group">
-                      <input type="text" class="form-control" v-model="card.rate">
-                    </div></td>
-                    <td><div class="form-group">
-                      <select class="form-control" v-model="card.unit">
-                          <option value="">Unit</option>
-                      <option>Sec</option>
-                      <option>Hr</option>
-                      <option>Min</option>
-                    </select>
-                    </div></td>
-                        <td><button class="btn btn-danger" :id="key" @click.prevent="delete_tv_radio_card_details">X</button></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <div class="text-center">
-          <span class="text-success" v-show="loading">
-          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        </span>
-        </div>
-                  </form>
-                  <div class="m-3 float-left">
-                     <button type="button" class="btn btn-secondary mr-1" @click.prevent="new_tv_radio_card">Add new Card</button>
-                  </div>
-                  <div class="m-3 float-right">
-                  <button type="button" class="btn btn-secondary mr-1" @click.prevent="close_tv_radio_modal">Close</button>
-                <button type="button" class="btn btn-primary" @click.prevent="save_tv_changes">Save changes</button>
-                  </div>
-    </modal>
-
   <!-- <div v-show="showTvModal">
     <transition name="modal">
       <div class="modal-mask">
@@ -573,16 +563,20 @@ import axios from "axios"
           day: "",
           time: "",
           spot: "",
-          rate: "",
-          duration: "",
-          unit: ""
+          rate_details: [{
+            duration: "",
+            unit: "",
+            rate: ""
+          }]
         }],
         token: "",
         res_alert: false,
         alert_message: "",
         alert: "",
         loading: false,
-        preloader: true
+        preloader: false,
+        show_tv_rate_details: true,
+        show_tv_cards: Boolean
 			}
 		},
     methods: {
@@ -604,6 +598,15 @@ import axios from "axios"
           // statements
           console.log(e);
         }
+      },
+      Add_tv_rate(e){
+        let index = e.currentTarget.value
+        this.tv_cards[index].rate_details.push({
+          duration: "",
+          unit: "",
+          rate: ""
+        })
+        console.log(this.tv_cards)
       },
       view_print_cards(){
 
@@ -648,7 +651,8 @@ import axios from "axios"
         console.log(index)
         let id = e.currentTarget.value
         console.log(id)
-        try {
+        if(this.all_tv_radio_cards[index].status === false){
+          try {
           // statements
           let activate = await axios({
             url: "https://media-kokrokooad.herokuapp.com/api/ratecard/"+ id + "/activate",
@@ -664,6 +668,26 @@ import axios from "axios"
           // statements
           console.log(e);
         }
+        }
+
+        if(this.all_tv_radio_cards[index].status == true){
+          try {
+          // statements
+          let activate = await axios({
+            url: "https://media-kokrokooad.herokuapp.com/api/ratecard/"+ id + "/deactivate",
+            method: "POST",
+            headers:{
+              'Authorization': 'Bearer ' + this.token
+            }
+          })
+          if(activate.status === 200){
+            this.all_tv_radio_cards[index].status = false
+          }
+        } catch(e) {
+          // statements
+          console.log(e);
+        }
+        }
       },
       async activate_print_card(e){
         let index = e.currentTarget.parentElement.parentElement.id
@@ -671,7 +695,8 @@ import axios from "axios"
         let id = e.currentTarget.value
         console.log(id)
 
-        try {
+        if(this.all_print_cards[index].status === false){
+          try {
           // statements
           let activate = await axios({
             url: "https://media-kokrokooad.herokuapp.com/api/ratecard/"+ id + "/activate",
@@ -687,18 +712,32 @@ import axios from "axios"
           // statements
           console.log(e);
         }
+        }
+        if(this.all_print_cards[index].status === true){
+          try {
+          // statements
+          let activate = await axios({
+            url: "https://media-kokrokooad.herokuapp.com/api/ratecard/"+ id + "/deactivate",
+            method: "POST",
+            headers:{
+              'Authorization': 'Bearer ' + this.token
+            }
+          })
+          if(activate.status === 200){
+            this.all_print_cards[index].status = false
+          }
+        } catch(e) {
+          // statements
+          console.log(e);
+        }
+        }
       },
       edit_tv_radio_card(e){
-        this.$modal.show('tv_radio_modal')
         let index = e.currentTarget.parentElement.parentElement.id
         this.tv_cards = this.all_tv_radio_cards[index].card_details
         this.tv_title = this.all_tv_radio_cards[index].title
-
         let update_id = e.currentTarget.value
         this.update_tv_radio = update_id
-      },
-      close_tv_radio_modal(){
-        this.$modal.hide('tv_radio_modal')
       },
       view_tv_radio_cards(){
 
@@ -772,24 +811,14 @@ import axios from "axios"
           slot: "",
           rate: ""
         })
-      },
-      new_tv_radio_card(){
-        this.tv_cards.push({
-          day: "",
-          time: "",
-          slot: "",
-          duration: "",
-          rate: "",
-          unit: ""
-        })
       }
     },
 		mounted(){
 		},
     beforeCreate(){
-      if(!this.$session.exists()){
-        this.$router.push({path: '/'})
-      }
+      // if(!this.$session.exists()){
+      //   this.$router.push({path: '/'})
+      // }
 
       //fetching all cards available
 	},

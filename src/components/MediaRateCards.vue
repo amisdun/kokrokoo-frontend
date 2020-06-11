@@ -363,14 +363,15 @@
     <span class="text-danger">{{error5}}</span>
   </div>
   </div>
-  <div class="form-row">
+  <div v-for="(rate_detail,key) of rate_details" :key="key">
+    <div class="form-row">
     <div class="form-group col-md-6">
-    <input type="number" class="form-control" v-model="duration" placeholder="Enter duration">
+    <input type="number" class="form-control" v-model="rate_detail.duration" placeholder="Enter duration">
     <span class="text-danger">{{error6}}</span>
   </div>
   <div class="form-group col-md-2">
-    <select class="form-control" v-model="unit">
-      <option value="">Unit</option>
+    <select class="form-control" v-model="rate_detail.unit">
+      <option value="" selected disabled>Unit</option>
   <option>Sec</option>
   <option>Hr</option>
   <option>Min</option>
@@ -378,8 +379,9 @@
     <span class="text-danger">{{error8}}</span>
   </div>
   <div class="form-group col-md-4">
-    <input type="text" class="form-control" v-model="rate" placeholder="Enter Rate">
+    <input type="text" class="form-control" v-model="rate_detail.rate" placeholder="Enter Rate">
     <span class="text-danger">{{error7}}</span>
+  </div>
   </div>
   </div>
   <div class="text-center">
@@ -388,6 +390,7 @@
         </span>
         </div>
   <button type="submit" class="btn btn-primary" @click.prevent="CreateTvRadioCrad">Create Rate Card</button>
+  <button type="submit" class="btn btn-primary m-2" @click.prevent="AddTvRadioRate">Add Rate</button>
   <button type="submit" class="btn btn-primary float-right" @click.prevent="AddTvRadioCardDetails">+</button><br>
   <div class="text-center float-right">
     <span class="text-danger">{{error9}}</span>
@@ -482,9 +485,11 @@ import axios from 'axios'
         time_from: "",
         time_to: "",
         day: "",
-        rate: "",
-        unit: "",
-        duration: "",
+        rate_details: [{
+          duration: "",
+          unit: "",
+          rate: ""
+        }],
         loading: false,
         alert: "",
         res_alert: false,
@@ -560,6 +565,14 @@ import axios from 'axios'
           },300)
         }
       },
+      AddTvRadioRate(){
+        this.rate_details.push({
+          duration: "",
+          unit: "",
+          rate: ""
+        })
+        console.log(this.rate_details)
+      },
      async Create_print_card(title,print_card_details){
          try {
               // statements
@@ -631,8 +644,6 @@ import axios from 'axios'
             }
       },
       AddPrintCardDetails(){
-        console.log(this.Advert_size)
-        console.log(this.print_card_details)
         if(this.print_card_details.length < 1){
             this.print_card_details.push({
               advert_size: this.Advert_size,
@@ -665,9 +676,7 @@ import axios from 'axios'
               time: this.time_from + " - " + this.time_to,
               day: this.day,
               spot: this.spots,
-              rate: this.rate + "GHS",
-              duration: this.duration,
-              unit: this.unit
+              rate_details: this.rate_details
             })
           }
           else{
@@ -686,9 +695,7 @@ import axios from 'axios'
                 time: this.time_from + " - " + this.time_to,
                 day: this.day,
                 spot: this.spots,
-                rate: this.rate,
-                duration: this.duration,
-                unit: this.unit
+                rate_details: this.rate_details
               })
             }
           }
