@@ -500,7 +500,6 @@ import axios from 'axios'
 		},
     methods: {
       CreateTvRadioCrad(){
-        console.log(this.title)
         if(validator.isEmpty(this.title)) this.error1 = "title is required";
         else this.error1 = "";
         if(validator.isEmpty(this.day)) this.error2 = "day is required";
@@ -511,12 +510,6 @@ import axios from 'axios'
         else this.error4 = "";
         if(validator.isEmpty(this.spots)) this.error5 = "spots required";
         else this.error5 = "";
-        if(validator.isEmpty(this.duration)) this.error6 = "duration required";
-        else this.error6 = "";
-        if(validator.isEmpty(this.rate)) this.error7 = "rate required";
-        else this.error7 = "";
-        if(validator.isEmpty(this.unit)) this.error8 = "unit required";
-        else this.error8 = "";
         if(this.tv_radio_card_details.length === 0) this.error9 = "Please click to add card Details";
         else this.error9 = ""
 
@@ -526,8 +519,6 @@ import axios from 'axios'
           !validator.isEmpty(this.day) &&
           !validator.isEmpty(this.time_from) &&
           !validator.isEmpty(this.time_to) &&
-          !validator.isEmpty(this.rate) &&
-          !validator.isEmpty(this.unit) &&
           this.tv_radio_card_details.length !== 0
           ){
           this.loading = true
@@ -595,7 +586,6 @@ import axios from 'axios'
                 this.alert = "success"
                 this.alert_message = "You have created a New Rate Card"
                 this.res_alert = true
-                this.$forceUpdate()
               }
             } catch(e) {
               // statements
@@ -630,7 +620,6 @@ import axios from 'axios'
                 this.alert = "success"
                 this.alert_message = "You have created a New Rate Card"
                 this.res_alert = true
-                this.$forceUpdate()
               }
             } catch(e) {
               // statements

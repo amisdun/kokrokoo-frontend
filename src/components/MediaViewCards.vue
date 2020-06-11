@@ -376,8 +376,13 @@
           </div>
         </div>
         </div>
+        <div class="text-center">
+          <span class="text-success" v-show="loading">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        </span>
+        </div><br>
         <button class="btn btn-success m-2" @click.prevent="save_tv_changes">Save Changes</button>
-        <button class="btn btn-secondary float-right m-2" @click.prevent="show_tv_rate_details = false;show_tv_cards = true">Close</button>
+        <button class="btn btn-secondary float-right m-2" @click.prevent="show_tv_rate_details = false;show_tv_cards = true;res_alert = false">Close</button>
     </div>
         <div class="m-5 shadow-lg" v-if="media_type === 'TV' || media_type === 'Radio'" v-show="show_tv_cards">
           <table class="table">
@@ -574,8 +579,8 @@ import axios from "axios"
         alert_message: "",
         alert: "",
         loading: false,
-        preloader: false,
-        show_tv_rate_details: true,
+        preloader: true,
+        show_tv_rate_details: false,
         show_tv_cards: Boolean
 			}
 		},
@@ -738,6 +743,9 @@ import axios from "axios"
         this.tv_title = this.all_tv_radio_cards[index].title
         let update_id = e.currentTarget.value
         this.update_tv_radio = update_id
+
+        this.show_tv_rate_details = true;
+        this.show_tv_cards = false
       },
       view_tv_radio_cards(){
 
@@ -816,9 +824,9 @@ import axios from "axios"
 		mounted(){
 		},
     beforeCreate(){
-      // if(!this.$session.exists()){
-      //   this.$router.push({path: '/'})
-      // }
+      if(!this.$session.exists()){
+        this.$router.push({path: '/'})
+      }
 
       //fetching all cards available
 	},
