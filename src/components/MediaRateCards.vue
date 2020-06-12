@@ -620,6 +620,8 @@ import axios from 'axios'
                 this.alert = "success"
                 this.alert_message = "You have created a New Rate Card"
                 this.res_alert = true
+                this.tv_radio_card_details = []
+                console.log(this.tv_radio_card_details)
               }
             } catch(e) {
               // statements
