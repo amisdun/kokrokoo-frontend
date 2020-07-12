@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>AJAX CALLS</title>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+</head>
+<body>
+
+	<form>
+		<input type="text" id="username" name="" placeholder="username">
+		<span id="error1" style="color:red"></span>
+		<br><br>
+		<input type="password" id="password" name="" placeholder="password">
+		<span id="error2" style="color:red"></span>
+		<br><br>
+		<button type="submit" id="login">submit</button>
+		<span id="error" style="color:red"></span>
+	</form>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		console.log("you are using jquery")
+
+			$("#login").click(function(e){
+				let username = $("#username").val()
+				let password = $("#password").val()
+				e.preventDefault()
+				if(!username) $("#error1").text("username required")
+				else $("#error1").text("")
+				if(!password) $("#error2").text("password required")
+				else $("#error2").text("")
+
+				if(username && password){
+					let data = {
+						email: username,
+						password: password
+					}
+					axios({
+						url: "http://localhost:3000/admin/signin",
+						data: data,
+						method: "POST"
+					})
+					.then(response => {
+						if(response.data.res === "failed"){
+							$("#error").text(response.data.message)
+						}
+						if(response.data.message === "Authentication succesfull"){
+							location.href = 'js.html'
+						}
+					})
+					.catch(err => {
+						console.log(err)
+					})
+				}
+		})
+	})
+
+</script>
+</body>
+</html>

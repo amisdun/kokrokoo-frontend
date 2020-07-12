@@ -398,12 +398,13 @@
   <hr>
 <div class="row">
   <div class="col-4 m-1" v-for="(tv_radio,key) of tv_radio_card_details" :key="key">
-  <button type="submit" class="btn btn-info"><span> Day: {{tv_radio.day}}; </span><span> Time: {{tv_radio.time}}; </span><span> Slot: {{tv_radio.spot}}; </span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemoveTvRadio">X</a></button>
+  <span data-toggle="modal" data-target="#exampleModal1" @click.prevent="modal_tv_card_details = tv_radio.rate_details" class="btn btn-info"><span> Day: {{tv_radio.day}}; </span><span> Time: {{tv_radio.time}}; </span><span> Slot: {{tv_radio.spot}}; </span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemoveTvRadio">X</a></span>
   </div>
 
 </div>
 
 </form>
+
 
 <form v-else-if="media_type === 'print'">
 <div class="form-group">
@@ -437,7 +438,7 @@
 <hr>
 <div class="row">
   <div class="col-md-6 mt-2 mb-2" v-for="(print,key) of print_card_details" :key="key">
-  <button type="submit" class="btn btn-info"><span>Advert Size: {{print.advert_size}}; </span><span>Slots:  {{print.slot}}; </span><span>Rate: {{print.rate}}</span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemovePrint">X</a></button>
+  <button data-toggle="modal" data-target="#exampleModal" class="btn btn-info"><span>Advert Size: {{print.advert_size}}; </span><span>Slots:  {{print.slot}}; </span><span>Rate: {{print.rate}}</span><a href="#" :id="key" class="btn btn-danger" @click.prevent="RemovePrint">X</a></button>
   </div>
 </div>
 </form>
@@ -454,6 +455,61 @@
           </div>
         </div>
       </footer>
+
+			<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="exampleModalLabel">Rate Details</h5>
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          <span aria-hidden="true">&times;</span>
+			        </button>
+			      </div>
+			      <div class="modal-body">
+							<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Duration</th>
+      <th scope="col">Rate</th>
+      <th scope="col">Units</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="(rate_detail,key) of modal_tv_card_details" :key="key">
+      <td>{{rate_detail.duration}}</td>
+      <td>{{rate_detail.rate}}</td>
+      <td>{{rate_detail.unit}}</td>
+    </tr>
+  </tbody>
+</table>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+
+
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			  <div class="modal-dialog" role="document">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="exampleModalLabel">Rate Details</h5>
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          <span aria-hidden="true">&times;</span>
+			        </button>
+			      </div>
+			      <div class="modal-body">
+
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+
 
 </div>
 </template>
@@ -479,6 +535,8 @@ import axios from 'axios'
         card_details: "",
         print_card_details: [],
         tv_radio_card_details: [],
+				modal_tv_card_details: [],
+				modal_tv_index: null,
         Advert_size: "",
         title: "",
         spots:"",
