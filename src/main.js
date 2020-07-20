@@ -27,6 +27,10 @@ import MediaViewCards from './components/MediaViewCards.vue'
 import MediaSubscriptions from './components/MediaSubscriptions.vue'
 import MediaTransactions from './components/MediaTransactions.vue'
 import MediaCreateFromExisting from "./components/MediaCreateFromExisting.vue"
+import PendingSubscriptions from "./components/PendingSubscriptions.vue"
+import RejectedSubscriptions from "./components/RejectedSubscriptions.vue"
+import ActiveSubscriptions from "./components/ActiveSubscriptions.vue"
+import ApprovedSubscriptions from "./components/ApprovedSubscriptions.vue"
 
 Vue.use(VModal)
 Vue.use(LoadScript)
@@ -47,7 +51,11 @@ const router = new VueRouter({
 		{path: '/Media/ViewCards', name: 'MediaViewCards', component: MediaViewCards},
 		{path: '/Media/Subscriptions', name: 'MediaSubscriptions', component: MediaSubscriptions},
 		{path: '/Media/Transactions', name: 'MediaTransactions', component: MediaTransactions},
-		{path: '/Media/CreateFromExisting', name: 'MediaCreateFromExisting', component: MediaCreateFromExisting}
+		{path: '/Media/CreateFromExisting', name: 'MediaCreateFromExisting', component: MediaCreateFromExisting},
+		{path: '/Media/PendingSubscriptions', name: 'PendingSubscriptions', component: PendingSubscriptions},
+		{path: '/Media/RejectedSubscriptions', name: 'RejectedSubscriptions', component: RejectedSubscriptions},
+		{path: '/Media/ApprovedSubscriptions', name: 'ApprovedSubscriptions', component: ApprovedSubscriptions},
+		{path: '/Media/ActiveSubscriptions', name: 'ActiveSubscriptions', component: ActiveSubscriptions}
 	],
 	mode: 'history'
 })
