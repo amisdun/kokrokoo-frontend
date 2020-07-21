@@ -391,6 +391,7 @@
 										</div>
 										<button type="submit" class="btn btn-primary" @click.prevent="CreateTvRadioCrad">Create Rate Card</button>
 										<button type="submit" class="btn btn-primary m-2" @click.prevent="AddTvRadioRate">Add Rate</button>
+										<button type="submit" class="btn btn-primary float-right m-2" @click.prevent="AddTvRadioCardDetails">+</button><br>
 										<button type="submit" class="btn btn-primary float-right" @click.prevent="show_tv_rate_details = true">Preview</button><br>
 										<div class="text-center float-right">
 											<span class="text-danger">{{error9}}</span>
@@ -791,10 +792,10 @@
 
 				},
 				AddTvRadioCardDetails(){
+					this.res_alert = false
 					if(validator.isEmpty(this.title) || validator.isEmpty(this.spots) || validator.isEmpty(this.day) || validator.isEmpty(this.time_from) || validator.isEmpty(this.time_to)){
 						return null
 					} else {
-						console.log(this.time_to)
 						if(this.tv_radio_card_details.length < 1){
 							this.tv_radio_card_details.push({
 								time: this.time_from + " - " + this.time_to,
@@ -802,6 +803,12 @@
 								spot: this.spots,
 								rate_details: this.rate_details
 							})
+
+							let tv_radio_details = this.tv_radio_card_details
+
+							this.alert_message = tv_radio_details.length + " data added"
+							this.alert = "success"
+							this.res_alert = true
 						}
 						else{
 							let added_tv_radio = false
@@ -821,9 +828,11 @@
 									spot: this.spots,
 									rate_details: this.rate_details
 								})
+								this.alert_message = tv_radio_details.length + " data added"
+								this.alert = "success"
+								this.res_alert = true
 							}
 						}
-						console.log(this.tv_radio_card_details)
 					}
 				},
 				RemovePrint(e){

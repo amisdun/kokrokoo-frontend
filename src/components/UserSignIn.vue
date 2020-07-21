@@ -101,7 +101,7 @@ export default {
             data: {
               grant_type : "password",
               client_id : 1,
-              client_secret: "r5TIDYCx6ORR6JIMqow0vU64GzbcJM724OLFCFrf",
+              client_secret: "4AsiEW6jSyq1nC2b9xM2qkyLfSVu4bJbGU8sG1qu",
               username: email,
               password: password,
               provider: "users"
