@@ -828,6 +828,7 @@
 									spot: this.spots,
 									rate_details: this.rate_details
 								})
+								let tv_radio_details = this.tv_radio_card_details
 								this.alert_message = tv_radio_details.length + " data added"
 								this.alert = "success"
 								this.res_alert = true
